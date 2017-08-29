@@ -40,6 +40,7 @@
         console.log(this.$db)
 
         let html = ''
+        
         fs.readFileAsync('/Users/haoeryou/Documents/hve-blog/posts/hello.md', 'utf8')
           .then((data1) => {
             console.log(data1)

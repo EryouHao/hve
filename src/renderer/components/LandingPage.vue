@@ -1,29 +1,12 @@
 <template>
   <div id="wrapper">
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
+    <!-- <img id="logo" src="~@/assets/logo.png" alt="electron-vue"> -->
     <main>
-      <div class="left-side">
-        <span class="title">
-          Welcome to your new project![hve]
-        </span>
-        <system-information></system-information>
-      </div>
-
-      <div class="right-side">
-        <div class="doc">
-          <div class="title">Getting Started</div>
-          <p>
-            electron-vue comes packed with detailed documentation that covers everything from
-            internal configurations, using the project structure, building your application,
-            and so much more.
-          </p>
-          <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
-        </div>
-        <div class="doc">
-          <div class="title alt">Other Documentation</div>
-          <button class="alt" @click="open('https://electron.atom.io/docs/')">Electron</button>
-          <button class="alt" @click="open('https://vuejs.org/v2/guide/')">Vue.js</button>
-        </div>
+      <system-information></system-information>
+      <div class="doc">
+        <p>{{ content }}</p>
+        <button @click="test">test</button>
+        <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
       </div>
     </main>
   </div>
@@ -31,13 +14,55 @@
 
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
+  const fs = require('fs')
+  const pug = require('pug')
+  const matter = require('gray-matter')
+  const showdown = require('showdown')
+  const converter = new showdown.Converter()
+
+  const Promise = require('bluebird')
+  Promise.promisifyAll(fs)
 
   export default {
     name: 'landing-page',
     components: { SystemInformation },
+    data () {
+      return {
+        content: ''
+      }
+    },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
+      },
+      test () {
+        console.log(this.$electron)
+        console.log(this.$db)
+
+        let html = ''
+        fs.readFileAsync('/Users/haoeryou/Documents/hve-blog/posts/hello.md', 'utf8')
+          .then((data1) => {
+            console.log(data1)
+            const data = matter(data1)
+            html = converter.makeHtml(data.content)
+            return fs.readFileAsync('/Users/haoeryou/Documents/hve-blog/theme/easy/index.pug', 'utf8')
+          })
+          .then((data2) => {
+            const template = pug.compile(data2, {
+              filename: 'index.html'
+            })
+            const htmlStr = template({
+              articles: ['post1', 'post2', 'post3'],
+              content: html
+            })
+            return fs.writeFileAsync('/Users/haoeryou/Documents/hve-blog/public/index.html', htmlStr)
+          })
+          .then((data3) => {
+            console.log('success')
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     }
   }
@@ -62,7 +87,7 @@
         rgba(229, 229, 229, .9) 100%
       );
     height: 100vh;
-    padding: 60px 80px;
+    padding: 20px 30px;
     width: 100vw;
   }
 
@@ -73,13 +98,6 @@
   }
 
   main {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  main > div { flex-basis: 50%; }
-
-  .left-side {
     display: flex;
     flex-direction: column;
   }

@@ -19,7 +19,8 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
-    "postinstall": "npm run lint:fix"
+    "postinstall": "npm run lint:fix",
+    "server": "node server/index.js"
   },
   "build": {
     "productName": "hve",
@@ -58,6 +59,7 @@
   "dependencies": {
     "axios": "^0.16.1",
     "bluebird": "^3.5.0",
+    "express": "^4.15.4",
     "gray-matter": "^3.0.3",
     "nedb": "^1.8.0",
     "pug": "^2.0.0-rc.3",

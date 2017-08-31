@@ -40,7 +40,6 @@
         console.log(this.$db)
 
         let html = ''
-        
         fs.readFileAsync('/Users/haoeryou/Documents/hve-blog/posts/hello.md', 'utf8')
           .then((data1) => {
             console.log(data1)
@@ -56,7 +55,8 @@
               articles: ['post1', 'post2', 'post3'],
               content: html
             })
-            return fs.writeFileAsync('/Users/haoeryou/Documents/hve-blog/public/index.html', htmlStr)
+            console.log(htmlStr)
+            return fs.writeFileAsync('/Users/haoeryou/fed/hve/public/index.html', htmlStr)
           })
           .then((data3) => {
             console.log('success')

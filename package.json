@@ -61,6 +61,7 @@
     "bluebird": "^3.5.0",
     "express": "^4.15.4",
     "gray-matter": "^3.0.3",
+    "iview": "^2.2.0",
     "nedb": "^1.8.0",
     "pug": "^2.0.0-rc.3",
     "showdown": "^1.7.3",

@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'hve'
+    name: 'hve',
   }
 </script>
 

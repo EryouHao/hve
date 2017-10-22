@@ -7,14 +7,14 @@
             Hve
           </div>
           <MenuItem name="1">
-          <Icon type="ios-keypad"></Icon>
-          <span class="text">文章</span>
+            <Icon type="ios-keypad"></Icon>
+            <span class="text">文章</span>
           </MenuItem>
           <MenuItem name="2">
-          <span class="text">主题</span>
+            <span class="text">主题</span>
           </MenuItem>
           <MenuItem name="3">
-          <span class="text">配置</span>
+            <span class="text">配置</span>
           </MenuItem>
         </Menu>
       </Col>
@@ -25,7 +25,13 @@
           </Button>
         </div>
         <div class="content">
-          <div class="main">内容区域</div>
+          <div class="main">
+            <Button @click="getPostList">获取文章列表</Button>
+            <Button @click="buildAllPost">Build</Button>
+            <Button @click="queryDb">Query DB</Button>
+            <Button @click="emptyDb">Empty DB</Button>
+            <p v-for="post in postList">{{ post.data.title }} {{ post.data.date }}</p>
+          </div>
         </div>
         <div class="copy">
           2017 &copy; EryouHao
@@ -35,17 +41,24 @@
   </div>
 </template>
 <script>
+import Post from '@/lib/util/post'
+
 export default {
   data() {
     return {
       spanLeft: 5,
       spanRight: 19,
+      postList: [],
     }
   },
   computed: {
     iconSize() {
       return this.spanLeft === 5 ? 14 : 24
     },
+  },
+  created() {
+    this.emptyDb()
+    this.getPostList()
   },
   methods: {
     toggleClick() {
@@ -56,6 +69,38 @@ export default {
         this.spanLeft = 5
         this.spanRight = 19
       }
+    },
+    getPostList() {
+      this.postList = Post.getPostList()
+      this.$db.insert(this.postList, (err, ret) => {
+        if (err) console.log(err)
+        console.log('插入成功')
+        console.log(ret)
+      })
+      console.log(this.postList)
+    },
+    buildAllPost() {
+      const templatePath = '/Users/haoeryou/Documents/hve-blog/theme/easy'
+      const outputPath = '/Users/haoeryou/fed/hve/public/post'
+      this.postList.forEach((post) => {
+        Post.buildPost(post, templatePath, outputPath)
+      })
+    },
+    queryDb() {
+      this.$db.find({}, (err, docs) => {
+        if (err) console.log(err)
+        console.log(docs)
+      })
+    },
+    emptyDb() {
+      this.$db.remove({}, { multi: true }, (err, num) => {
+        if (err) console.log(err)
+        this.$db.loadDatabase((err) => {
+          if (err) console.log(err)
+          // done
+          console.log('remove success', num)
+        })
+      })
     },
   },
 }

@@ -1,6 +1,5 @@
-const express = require("express")
+const express = require('express')
 const app = express()
-const path = require('path')
 
 // config
 const port = 4000
@@ -9,8 +8,7 @@ const basePath = '/Users/haoeryou/fed/hve/public/'
 // public path
 app.use(express.static(basePath))
 
-
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
   res.render(basePath)
 })
 

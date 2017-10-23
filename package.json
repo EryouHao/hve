@@ -60,6 +60,7 @@
     "axios": "^0.16.1",
     "bluebird": "^3.5.0",
     "express": "^4.15.4",
+    "fs-extra": "^4.0.2",
     "gray-matter": "^3.0.3",
     "iview": "^2.2.0",
     "nedb": "^1.8.0",

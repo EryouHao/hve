@@ -30,6 +30,7 @@
             <Button @click="buildAllPost">Build</Button>
             <Button @click="queryDb">Query DB</Button>
             <Button @click="emptyDb">Empty DB</Button>
+            <Button @click="preview">Preview Website</Button>
             <p v-for="post in postList">{{ post.data.title }} {{ post.data.date }}</p>
           </div>
         </div>
@@ -41,6 +42,8 @@
   </div>
 </template>
 <script>
+import {shell} from 'electron'
+import fse from 'fs-extra'
 import Post from '@/lib/util/post'
 
 export default {
@@ -80,11 +83,17 @@ export default {
       console.log(this.postList)
     },
     buildAllPost() {
-      const templatePath = '/Users/haoeryou/Documents/hve-blog/theme/easy'
-      const outputPath = '/Users/haoeryou/fed/hve/public/post'
-      this.postList.forEach((post) => {
-        Post.buildPost(post, templatePath, outputPath)
-      })
+      const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy'
+      const outputPath = '/Users/haoeryou/fed/hve/public'
+      fse.emptyDir(`${outputPath}/post`)
+        .then(() => {
+          console.log('empty dir success!')
+          Post.buildPostList(this.postList, templatePath, outputPath)
+          this.postList.forEach((post) => {
+            Post.buildPost(post, templatePath, outputPath)
+          })
+        })
+        .catch(err => console.log(err))
     },
     queryDb() {
       this.$db.find({}, (err, docs) => {
@@ -101,6 +110,9 @@ export default {
           console.log('remove success', num)
         })
       })
+    },
+    preview() {
+      shell.openExternal('http://localhost:4000')
     },
   },
 }

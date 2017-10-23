@@ -34,18 +34,38 @@ module.exports = {
     return list
   },
   buildPost(post, templatePath, outputPath) {
+    // 单条文章
     const html = converter.makeHtml(post.content)
-    fs.readFileAsync(`${templatePath}/index.pug`, 'utf8').then((data) => {
+    fs.readFileAsync(`${templatePath}/post.pug`, 'utf8').then((data) => {
+      // console.log(data)
       const template = pug.compile(data, {
         filename: 'index.html',
+        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy',
       })
       const htmlStr = template({
         articles: ['post1', 'post2', 'post3'],
         content: html,
       })
-      return fs.writeFileAsync(`${outputPath}/${post.fileName}.html`, htmlStr)
+      // console.log(htmlStr)
+      return fs.writeFileAsync(`${outputPath}/post/${post.fileName}.html`, htmlStr)
     })
       .then(() => console.log('build post success.'))
+      .catch(err => console.log(err))
+  },
+  buildPostList(postList, templatePath, outputPath) {
+    console.log(postList)
+    fs.readFileAsync(`${templatePath}/index.pug`, 'utf8').then((data) => {
+      console.log(data)
+      const template = pug.compile(data, {
+        filename: 'index.html',
+        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy',
+      })
+      const htmlStr = template({
+        articles: postList,
+      })
+      return fs.writeFileAsync(`${outputPath}/index.html`, htmlStr)
+    })
+      .then(() => console.log('build post list success.'))
       .catch(err => console.log(err))
   },
 }

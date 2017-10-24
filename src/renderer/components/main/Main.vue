@@ -45,6 +45,7 @@
 import {shell} from 'electron'
 import fse from 'fs-extra'
 import Post from '@/lib/util/post'
+import Theme from '@/lib/util/theme'
 
 export default {
   data() {
@@ -83,15 +84,21 @@ export default {
       console.log(this.postList)
     },
     buildAllPost() {
-      const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy'
+      const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy/layout'
       const outputPath = '/Users/haoeryou/fed/hve/public'
+      const sassPath = '/Users/haoeryou/fed/hve/blog/theme/easy/source'
+      const cssPath = '/Users/haoeryou/fed/hve/public/stylesheets'
       fse.emptyDir(`${outputPath}/post`)
         .then(() => {
           console.log('empty dir success!')
+          // build post list
           Post.buildPostList(this.postList, templatePath, outputPath)
+          // build single post
           this.postList.forEach((post) => {
             Post.buildPost(post, templatePath, outputPath)
           })
+          // build theme TODO: 提出去
+          Theme.renderStylus(sassPath, cssPath)
         })
         .catch(err => console.log(err))
     },

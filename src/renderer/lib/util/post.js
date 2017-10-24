@@ -40,7 +40,7 @@ module.exports = {
       // console.log(data)
       const template = pug.compile(data, {
         filename: 'index.html',
-        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy',
+        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy/layout',
       })
       const htmlStr = template({
         articles: ['post1', 'post2', 'post3'],
@@ -58,7 +58,7 @@ module.exports = {
       console.log(data)
       const template = pug.compile(data, {
         filename: 'index.html',
-        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy',
+        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy/layout',
       })
       const htmlStr = template({
         articles: postList,

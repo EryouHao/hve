@@ -86,8 +86,8 @@ export default {
     buildAllPost() {
       const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy/layout'
       const outputPath = '/Users/haoeryou/fed/hve/public'
-      const sassPath = '/Users/haoeryou/fed/hve/blog/theme/easy/source'
-      const cssPath = '/Users/haoeryou/fed/hve/public/stylesheets'
+      const stylusPath = '/Users/haoeryou/fed/hve/blog/theme/easy/source'
+      const cssPath = '/Users/haoeryou/fed/hve/public/css'
       fse.emptyDir(`${outputPath}/post`)
         .then(() => {
           console.log('empty dir success!')
@@ -98,7 +98,7 @@ export default {
             Post.buildPost(post, templatePath, outputPath)
           })
           // build theme TODO: 提出去
-          Theme.renderStylus(sassPath, cssPath)
+          Theme.renderStylus(stylusPath, cssPath)
         })
         .catch(err => console.log(err))
     },

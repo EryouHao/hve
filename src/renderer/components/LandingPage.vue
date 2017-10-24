@@ -26,16 +26,16 @@
   export default {
     name: 'landing-page',
     components: { SystemInformation },
-    data () {
+    data() {
       return {
-        content: ''
+        content: '',
       }
     },
     methods: {
-      open (link) {
+      open(link) {
         this.$electron.shell.openExternal(link)
       },
-      test () {
+      test() {
         console.log(this.$electron)
         console.log(this.$db)
 
@@ -49,11 +49,11 @@
           })
           .then((data2) => {
             const template = pug.compile(data2, {
-              filename: 'index.html'
+              filename: 'index.html',
             })
             const htmlStr = template({
               articles: ['post1', 'post2', 'post3'],
-              content: html
+              content: html,
             })
             console.log(htmlStr)
             return fs.writeFileAsync('/Users/haoeryou/fed/hve/public/index.html', htmlStr)
@@ -64,8 +64,8 @@
           .catch((error) => {
             console.log(error)
           })
-      }
-    }
+      },
+    },
   }
 </script>
 

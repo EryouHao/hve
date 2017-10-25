@@ -91,7 +91,7 @@ export default {
     buildAllPost() {
       const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy/layout'
       const outputPath = '/Users/haoeryou/fed/hve/public'
-      const stylusPath = '/Users/haoeryou/fed/hve/blog/theme/easy/source'
+      const stylusPath = '/Users/haoeryou/fed/hve/blog/theme/easy/source/stylus'
       const cssPath = '/Users/haoeryou/fed/hve/public/css'
       fse.emptyDir(`${outputPath}/post`)
         .then(() => {

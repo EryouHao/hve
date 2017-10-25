@@ -31,6 +31,7 @@
             <Button @click="queryDb">Query DB</Button>
             <Button @click="emptyDb">Empty DB</Button>
             <Button @click="preview">Preview Website</Button>
+            <publish></publish>
             <p v-for="post in postList">{{ post.data.title }} {{ post.data.date }}</p>
           </div>
         </div>
@@ -46,8 +47,12 @@ import {shell} from 'electron'
 import fse from 'fs-extra'
 import Post from '@/lib/util/post'
 import Theme from '@/lib/util/theme'
+import Publish from '../publish/Publish'
 
 export default {
+  components: {
+    Publish,
+  },
   data() {
     return {
       spanLeft: 5,

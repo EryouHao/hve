@@ -1,13 +1,15 @@
 const fs = require('fs')
 const pug = require('pug')
 const matter = require('gray-matter')
-const showdown = require('showdown')
-const converter = new showdown.Converter()
+const marked = require('marked')
+const moment = require('moment')
+moment.locale('zh-cn')
 
 const Promise = require('bluebird')
 Promise.promisifyAll(fs)
 
 const postPath = '/Users/haoeryou/Documents/hve-blog/posts'
+const domain = 'http://eryouhao.github.io/hve-blog/'
 
 module.exports = {
   getPostList() {
@@ -35,7 +37,7 @@ module.exports = {
   },
   buildPost(post, templatePath, outputPath) {
     // 单条文章
-    const html = converter.makeHtml(post.content)
+    const html = marked(post.content)
     fs.readFileAsync(`${templatePath}/post.pug`, 'utf8').then((data) => {
       // console.log(data)
       const template = pug.compile(data, {
@@ -43,7 +45,9 @@ module.exports = {
         basedir: '/Users/haoeryou/fed/hve/blog/theme/easy/layout',
       })
       const htmlStr = template({
-        articles: ['post1', 'post2', 'post3'],
+        domain: domain,
+        title: post.data.title,
+        date: moment(post.data.date).format('MMMM Do YYYY, a'),
         content: html,
       })
       // console.log(htmlStr)
@@ -61,6 +65,7 @@ module.exports = {
         basedir: '/Users/haoeryou/fed/hve/blog/theme/easy/layout',
       })
       const htmlStr = template({
+        domain: domain,
         articles: postList,
       })
       return fs.writeFileAsync(`${outputPath}/index.html`, htmlStr)

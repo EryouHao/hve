@@ -1,5 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Main from '@/components/main/Main'
+import PostList from '@/components/post/PostList'
+import NewPost from '@/components/post/NewPost'
+import Setting from '@/components/setting/Setting'
+import Theme from '@/components/theme/Theme'
 
 Vue.use(Router)
 
@@ -7,12 +12,37 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'main',
-      component: require('@/components/main/Main'),
+      component: Main,
+      children: [
+        {
+          path: '/post-list',
+          name: 'post-list',
+          component: PostList,
+        },
+        {
+          path: '/new',
+          name: 'new-post',
+          component: NewPost,
+        },
+        {
+          path: '/theme',
+          name: 'theme',
+          component: Theme,
+        },
+        {
+          path: '/setting',
+          name: 'setting',
+          component: Setting,
+        },
+        {
+          path: '*',
+          redirect: '/post-list',
+        },
+      ],
     },
     {
       path: '*',
-      redirect: '/',
+      redirect: '/post-list',
     },
   ],
 })

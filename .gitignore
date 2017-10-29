@@ -12,6 +12,7 @@ thumbs.db
 
 # build result
 public/*
+.tmp/*
 
 # source
 blog/*

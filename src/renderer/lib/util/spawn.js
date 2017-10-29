@@ -7,10 +7,12 @@ export function promiseSpawn(cmd, args, options) {
   return new Promise((resolve, reject) => {
     const task = spawn(cmd, args, options)
     task.on('close', (code) => {
-      if (code) {
+      if (code === 128) {
         return reject(code)
       }
-      resolve()
+      resolve({
+        status: 'SUCCESS',
+      })
     })
   })
 }

@@ -1,6 +1,9 @@
 <template>
   <div class="post-list">
-    <p class="post" v-for="post in postList">{{ post.data.title }} <time>{{ post.data.date | formatDate }}</time></p>
+    <p class="post" v-for="post in postList">
+      {{ post.data.title }}
+      <time>{{ post.data.date | formatDate }}</time>
+    </p>
   </div>
 </template>
 
@@ -18,7 +21,7 @@ export default {
   },
   methods: {
     queryDb() {
-      this.$db.find({}).sort({
+      this.$dbPosts.find({}).sort({
         'data.date': -1,
       }).exec((err, docs) => {
         if (err) console.log(err)

@@ -2,7 +2,13 @@ import Datastore from 'nedb'
 import path from 'path'
 import { remote } from 'electron'
 
-export default new Datastore({
+const posts = new Datastore({
   autoload: true,
-  filename: path.join(remote.app.getPath('documents'), '/data.db'),
+  filename: path.join(remote.app.getPath('documents'), 'hve-blog/db/data.db'),
 })
+const config = new Datastore({
+  autoload: true,
+  filename: path.join(remote.app.getPath('documents'), 'hve-blog/db/config.db'),
+})
+
+export { posts, config }

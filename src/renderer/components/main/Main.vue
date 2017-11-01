@@ -62,7 +62,7 @@ export default {
     },
     getPostList() {
       this.postList = Post.getPostList()
-      this.$db.insert(this.postList, (err, ret) => {
+      this.$dbPosts.insert(this.postList, (err, ret) => {
         if (err) console.log(err)
         console.log('插入成功')
         console.log(ret)
@@ -89,9 +89,9 @@ export default {
         .catch(err => console.log(err))
     },
     emptyDb() {
-      this.$db.remove({}, { multi: true }, (err, num) => {
+      this.$dbPosts.remove({}, { multi: true }, (err, num) => {
         if (err) console.log(err)
-        this.$db.loadDatabase((err) => {
+        this.$dbPosts.loadDatabase((err) => {
           if (err) console.log(err)
           // done
           console.log('remove success', num)

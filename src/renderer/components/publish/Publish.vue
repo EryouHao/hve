@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <Button @click="publish">Publish</Button>
+    <i-button @click="publish">Publish</i-button>
   </div>
 </template>
 

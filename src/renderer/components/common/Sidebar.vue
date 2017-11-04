@@ -4,21 +4,21 @@
       Hve
       <p>A static blog build tool.</p>
     </div>
-    <Menu active-name="1" width="160px" @on-select="changeMenu">
-      <MenuItem name="post-list">
+    <i-menu active-name="1" width="160px" @on-select="changeMenu">
+      <i-menu-item name="post-list">
         <span class="text">文章</span>
-      </MenuItem>
-      <MenuItem name="theme">
+      </i-menu-item>
+      <i-menu-item name="theme">
         <span class="text">主题</span>
-      </MenuItem>
-      <MenuItem name="setting">
+      </i-menu-item>
+      <i-menu-item name="setting">
         <span class="text">配置</span>
-      </MenuItem>
-    </Menu>
+      </i-menu-item>
+    </i-menu>
     <div class="btns">
-      <Button type="primary" long>Preview</Button>
+      <i-button type="primary" long>Preview</i-button>
       <br><br>
-      <Button type="success" long>Publish</Button>
+      <i-button type="success" long>Publish</i-button>
     </div>
   </div>
 </template>

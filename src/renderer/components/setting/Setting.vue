@@ -1,28 +1,49 @@
 <template>
   <div class="setting">
-    <h2>Setting</h2>
-    <Form :model="settingForm" :label-width="80">
-      <FormItem label="源文件目录">
-        <Row>
-          <Col span="16">
-            <Input v-model="settingForm.sourcePath" disabled></Input>
-          </Col>
-          <Col span="8">
+    <h2>配置</h2>
+    <i-form :model="form" :label-width="80">
+      <i-form-item label="源文件目录">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.source" disabled></i-input>
+          </i-col>
+          <i-col span="8">
             <label for="file-path" class="btn-path">更改目录</label>
-            <input id="file-path" style="display: none;" type="file" webkitdirectory @change="updatePath">
-          </Col>
-        </Row>
-      </FormItem>
-    </Form>
+            <input id="file-path" style="display: none;" type="file" webkitdirectory @change="updateSource">
+          </i-col>
+        </i-row>
+      </i-form-item>
+      <i-form-item label="Domain">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.domain"></i-input>
+          </i-col>          
+        </i-row>
+      </i-form-item>
+      <i-form-item label="Repository">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.repo"></i-input>
+          </i-col>
+        </i-row>
+      </i-form-item>
+      <i-form-item>
+        <i-button type="primary" @click="save">保存</i-button>
+      </i-form-item>
+    </i-form>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data() {
     return {
-      settingForm: {
-        sourcePath: null,
+      form: {
+        source: null,
+        domain: null,
+        repo: null,
       },
     }
   },
@@ -30,21 +51,31 @@ export default {
     this.$dbConfig.find({}, (err, res) => {
       if (err) throw err
       console.log(res)
-      this.settingForm.sourcePath = res[0].sourcePath
+      this.form.source = res[0].source
+      this.form.domain = res[0].domain
+      this.form.repo = res[0].repo
+      this.$store.dispatch('updateSetting', res[0])
+      console.log(this.$store.state.Setting)
     })
   },
   methods: {
-    updatePath(e) {
-      console.log(e.target.files[0].path) // '/Users/haoeryou/Documents/hve-blog'
-      console.log(e.target.files[0].webkitRelativePath) // 'Documents/hve-blog'
-      this.settingForm.sourcePath = e.target.files[0].path
+    ...mapActions({
+
+    }),
+    updateSource(e) {
+      this.form.source = e.target.files[0].path
+    },
+    save() {
+      const config = {
+        source: this.form.source,
+        domain: this.form.domain,
+        repo: this.form.repo,
+      }
       this.$dbConfig.find({}, (err, res) => {
         if (err) throw err
-        console.log(res[0]._id)
-        this.$dbConfig.update({_id: res[0]._id}, { $set: {sourcePath: this.settingForm.sourcePath} }, {}, (err, res) => {
+        this.$dbConfig.update({_id: res[0]._id}, { $set: config }, {}, (err, res) => {
           if (err) throw err
           console.log('update success.')
-          console.log(res)
         })
       })
     },

@@ -11,7 +11,7 @@
       </div>
       <div class="new-post">
         <router-link to="/new">
-          <Button type="primary" shape="circle" icon="plus-round" size="large"></Button>
+          <i-button type="primary" shape="circle" icon="plus-round" size="large"></i-button>
         </router-link>
       </div>
     </div>

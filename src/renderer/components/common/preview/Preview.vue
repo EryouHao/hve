@@ -1,5 +1,5 @@
 <template>
-  <Button @click="preview">Preview</Button>
+  <i-button @click="preview">Preview</i-button>
 </template>
 
 <script>

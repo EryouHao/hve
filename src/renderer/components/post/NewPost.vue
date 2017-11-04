@@ -2,7 +2,7 @@
   <div class="markdown-con">
     <markdown-editor class="md-editor" preview-class="markdown-body" v-model="content"></markdown-editor>
     <div class="btns">
-      <Button type="primary">Save</Button>
+      <i-button type="primary">Save</i-button>
     </div>
   </div>
 </template>

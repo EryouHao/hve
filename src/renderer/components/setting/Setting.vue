@@ -48,15 +48,10 @@ export default {
     }
   },
   created() {
-    this.$dbConfig.find({}, (err, res) => {
-      if (err) throw err
-      console.log(res)
-      this.form.source = res[0].source
-      this.form.domain = res[0].domain
-      this.form.repo = res[0].repo
-      this.$store.dispatch('updateSetting', res[0])
-      console.log(this.$store.state.Setting)
-    })
+    const setting = this.$store.state.Setting
+    this.form.source = setting.source
+    this.form.domain = setting.domain
+    this.form.repo = setting.repo
   },
   methods: {
     ...mapActions({

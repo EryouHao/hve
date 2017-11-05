@@ -36,7 +36,7 @@ module.exports = {
   },
   buildPost(post, config) {
     // 单条文章
-    const html = marked(post.content)
+    const html = marked(post.content, { breaks: true })
     fs.readFileAsync(`${config.templatePath}/post.pug`, 'utf8').then((data) => {
       console.log(data)
       const template = pug.compile(data, {

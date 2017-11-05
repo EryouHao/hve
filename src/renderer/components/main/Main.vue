@@ -49,6 +49,10 @@ export default {
   created() {
     this.emptyDb()
     this.getPostList()
+    this.$dbConfig.find({}, (err, res) => {
+      if (err) throw err
+      this.$store.dispatch('updateSetting', res[0])
+    })
   },
   methods: {
     toggleClick() {

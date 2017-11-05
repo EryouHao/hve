@@ -1,0 +1,5 @@
+div.post-container
+  ul
+    each post in articles
+      li
+        a(href=`${domain}post/${post.fileName}.html` class='title')= post.data.title

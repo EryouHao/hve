@@ -1,11 +1,12 @@
 <template>
-  <i-button @click="preview">Preview</i-button>
+  <i-button type="primary" long @click="preview">Preview</i-button>
 </template>
 
 <script>
-import {shell} from 'electron'
+// import { shell } from 'electron'
 import fse from 'fs-extra'
 import Post from '@/lib/util/post'
+import Theme from '@/lib/util/theme'
 
 export default {
   data() {
@@ -14,25 +15,37 @@ export default {
   methods: {
     preview() {
       let posts = null
-      this.$db.find({}, (err, docs) => {
+      this.$dbPosts.find({}).sort({
+        'data.date': -1,
+      }).exec((err, docs) => {
         if (err) console.log(err)
         posts = docs
-        this.build('dev', posts)
-        shell.openExternal('http://localhost:4000')
+        this.build(posts)
+        // shell.openExternal('http://localhost:4000')
       })
     },
-    async build(env, posts, options) {
-      const dir = env === 'dev' ? '.tmp' : 'public'
-      const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy/layout'
-      const outputPath = `/Users/haoeryou/fed/hve/${dir}`
+    async build(posts) {
+      const basePath = this.$store.state.Setting.source
+      const templatePath = `${basePath}/theme/easy/layout`
+      const outputPath = `${basePath}/public`
+      const config = {
+        templatePath: templatePath,
+        outputPath: outputPath,
+        domain: this.$store.state.Setting.domain,
+      }
       // 渲染文章
-      // 创建预览文件夹 .tmp
-      await fse.ensureDir(dir)
+      await fse.ensureDir(`${outputPath}/post`)
       await fse.emptyDir(`${outputPath}/post`)
       posts.forEach((post) => {
-        Post.buildPost(post, templatePath, outputPath)
+        Post.buildPost(post, config)
       })
-      Post.buildPostList(posts, templatePath, outputPath)
+      Post.buildPostList(posts, config)
+      // 编译 stylus
+      const stylusPath = `${basePath}/theme/easy/source/stylus`
+      const cssPath = `${basePath}/public/css`
+      await fse.ensureDir(`${outputPath}/css`)
+      await fse.emptyDir(`${outputPath}/css`)
+      Theme.renderStylus(stylusPath, cssPath)
     },
   },
 }

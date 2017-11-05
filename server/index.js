@@ -4,7 +4,7 @@ const app = express()
 // config
 const port = 4000
 
-const basePath = '/Users/haoeryou/fed/hve/.tmp/'
+const basePath = '/Users/haoeryou/fed/hve/blog/public'
 // public path
 app.use(express.static(basePath))
 

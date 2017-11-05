@@ -15,4 +15,7 @@ public/*
 .tmp/*
 
 # source
-blog/*
+blog/posts/*
+blog/public/*
+blog/config.yml
+blog/data.db

@@ -16,7 +16,7 @@
       </i-menu-item>
     </i-menu>
     <div class="btns">
-      <i-button type="primary" long>Preview</i-button>
+      <preview></preview>
       <br><br>
       <i-button type="success" long>Publish</i-button>
     </div>
@@ -24,7 +24,12 @@
 </template>
 
 <script>
+import Preview from './preview/Preview'
+
 export default {
+  components: {
+    Preview,
+  },
   data() {
     return {}
   },

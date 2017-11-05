@@ -75,7 +75,7 @@ export default {
         if (err) throw err
         this.$dbConfig.update({_id: res[0]._id}, { $set: config }, {}, (err, res) => {
           if (err) throw err
-          console.log('update success.')
+          this.$Message.success('update success.')
         })
       })
     },

@@ -47,11 +47,11 @@ export default {
     },
   },
   created() {
-    this.emptyDb()
-    this.getPostList()
     this.$dbConfig.find({}, (err, res) => {
       if (err) throw err
       this.$store.dispatch('updateSetting', res[0])
+      this.emptyDb()
+      this.getPostList()
     })
   },
   methods: {
@@ -64,11 +64,11 @@ export default {
         this.spanRight = 19
       }
     },
-    getPostList() {
-      this.postList = Post.getPostList()
+    async getPostList() {
+      const postPath = `${this.$store.state.Setting.source}/posts`
+      this.postList = await Post.getPostList(postPath)
       this.$dbPosts.insert(this.postList, (err, ret) => {
         if (err) console.log(err)
-        console.log('插入成功')
         console.log(ret)
       })
       console.log(this.postList)

@@ -8,11 +8,12 @@ moment.locale('zh-cn')
 const Promise = require('bluebird')
 Promise.promisifyAll(fs)
 
-const postPath = '/Users/haoeryou/Documents/hve-blog/posts'
+// const postPath = '/Users/haoeryou/Documents/hve-blog/posts'
 
 module.exports = {
-  getPostList() {
-    const list = []
+  getPostList(postPath) {
+    const resultList = []
+    const requestList = []
     fs.readdir(postPath, (err, files) => {
       if (err) {
         console.log(err)
@@ -23,16 +24,20 @@ module.exports = {
           if (item === '.DS_Store') {
             return
           }
-          fs.readFileAsync(`${postPath}/${item}`, 'utf8').then((data) => {
-            const post = matter(data)
-            post.fileName = item.substring(0, item.length - 3)
-            list.push(post)
-          })
+          requestList.push(fs.readFileAsync(`${postPath}/${item}`, 'utf8'))
         })
+        Promise.all(requestList).then((results) => {
+          results.forEach((result, index) => {
+            const post = matter(result)
+            post.fileName = files[index + 1].substring(0, result.length - 3) // 有待优化！
+            resultList.push(post)
+          })
+        }).catch(err => console.log(err))
       }
     })
-    console.log('list', list)
-    return list
+    return new Promise((resolve, reject) => {
+      resolve(resultList)
+    })
   },
   buildPost(post, config) {
     // 单条文章

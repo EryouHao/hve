@@ -5,8 +5,8 @@
 <script>
 // import { shell } from 'electron'
 import fse from 'fs-extra'
-import Post from '@/lib/util/post'
-import Theme from '@/lib/util/theme'
+import { buildPost, buildPostList } from '@/lib/util/post'
+import { renderStylus } from '@/lib/util/theme'
 
 export default {
   data() {
@@ -37,15 +37,15 @@ export default {
       await fse.ensureDir(`${outputPath}/post`)
       await fse.emptyDir(`${outputPath}/post`)
       posts.forEach((post) => {
-        Post.buildPost(post, config)
+        buildPost(post, config)
       })
-      Post.buildPostList(posts, config)
+      buildPostList(posts, config)
       // 编译 stylus
       const stylusPath = `${basePath}/theme/easy/source/stylus`
       const cssPath = `${basePath}/public/css`
       await fse.ensureDir(`${outputPath}/css`)
       await fse.emptyDir(`${outputPath}/css`)
-      Theme.renderStylus(stylusPath, cssPath)
+      renderStylus(stylusPath, cssPath)
     },
   },
 }

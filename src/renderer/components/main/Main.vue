@@ -21,9 +21,7 @@
 import Sidebar from '@/components/common/Sidebar'
 import PostList from '@/components/post/PostList'
 import {shell} from 'electron'
-import fse from 'fs-extra'
-import Post from '@/lib/util/post'
-import Theme from '@/lib/util/theme'
+import { getPostList } from '@/lib/util/post'
 import Publish from '../publish/Publish'
 import Preview from '@/components/common/preview/Preview'
 
@@ -66,31 +64,12 @@ export default {
     },
     async getPostList() {
       const postPath = `${this.$store.state.Setting.source}/posts`
-      this.postList = await Post.getPostList(postPath)
+      this.postList = await getPostList(postPath)
       this.$dbPosts.insert(this.postList, (err, ret) => {
         if (err) console.log(err)
         console.log(ret)
       })
       console.log(this.postList)
-    },
-    buildAllPost() {
-      const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy/layout'
-      const outputPath = '/Users/haoeryou/fed/hve/public'
-      const stylusPath = '/Users/haoeryou/fed/hve/blog/theme/easy/source/stylus'
-      const cssPath = '/Users/haoeryou/fed/hve/public/css'
-      fse.emptyDir(`${outputPath}/post`)
-        .then(() => {
-          console.log('empty dir success!')
-          // build post list
-          Post.buildPostList(this.postList, templatePath, outputPath)
-          // build single post
-          this.postList.forEach((post) => {
-            Post.buildPost(post, templatePath, outputPath)
-          })
-          // build theme TODO: 提出去
-          Theme.renderStylus(stylusPath, cssPath)
-        })
-        .catch(err => console.log(err))
     },
     emptyDb() {
       this.$dbPosts.remove({}, { multi: true }, (err, num) => {

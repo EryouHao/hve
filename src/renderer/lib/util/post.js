@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fse = require('fs-extra')
 const pug = require('pug')
 const matter = require('gray-matter')
 const marked = require('marked')
@@ -8,74 +9,59 @@ moment.locale('zh-cn')
 const Promise = require('bluebird')
 Promise.promisifyAll(fs)
 
-// const postPath = '/Users/haoeryou/Documents/hve-blog/posts'
+async function getPostList(postPath) {
+  console.log(postPath)
+  const resultList = []
+  const requestList = []
+  const files = await fse.readdir(postPath)
+  console.log('files: ', files)
+  files.forEach((item) => {
+    if (item === '.DS_Store') {
+      return
+    }
+    requestList.push(fs.readFileAsync(`${postPath}/${item}`, 'utf8'))
+  })
+  const results = await Promise.all(requestList)
+  results.forEach((result, index) => {
+    const post = matter(result)
+    post.fileName = files[index + 1].substring(0, result.length - 3) // 有待优化！
+    resultList.push(post)
+  })
+  return Promise.resolve(resultList)
+}
 
-module.exports = {
-  getPostList(postPath) {
-    const resultList = []
-    const requestList = []
-    fs.readdir(postPath, (err, files) => {
-      if (err) {
-        console.log(err)
-      }
-      console.log(files)
-      if (files) {
-        files.forEach((item) => {
-          if (item === '.DS_Store') {
-            return
-          }
-          requestList.push(fs.readFileAsync(`${postPath}/${item}`, 'utf8'))
-        })
-        Promise.all(requestList).then((results) => {
-          results.forEach((result, index) => {
-            const post = matter(result)
-            post.fileName = files[index + 1].substring(0, result.length - 3) // 有待优化！
-            resultList.push(post)
-          })
-        }).catch(err => console.log(err))
-      }
-    })
-    return new Promise((resolve, reject) => {
-      resolve(resultList)
-    })
-  },
-  buildPost(post, config) {
-    // 单条文章
-    const html = marked(post.content, { breaks: true })
-    fs.readFileAsync(`${config.templatePath}/post.pug`, 'utf8').then((data) => {
-      console.log(data)
-      const template = pug.compile(data, {
-        filename: 'index.html',
-        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy/layout',
-      })
-      console.log(config)
-      const htmlStr = template({
-        domain: config.domain,
-        title: post.data.title,
-        date: moment(post.data.date).format('MMMM Do YYYY, a'),
-        content: html,
-      })
-      // console.log(htmlStr)
-      return fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, htmlStr)
-    })
-      .then(() => console.log('build post success.'))
-      .catch(err => console.log(err))
-  },
-  buildPostList(postList, config) {
-    console.log(postList)
-    fs.readFileAsync(`${config.templatePath}/index.pug`, 'utf8').then((data) => {
-      console.log(data)
-      const template = pug.compile(data, {
-        filename: 'index.html',
-        basedir: '/Users/haoeryou/fed/hve/blog/theme/easy/layout',
-      })
-      const htmlStr = template({
-        domain: config.domain,
-        articles: postList,
-      })
-      return fs.writeFileAsync(`${config.outputPath}/index.html`, htmlStr)
-    })
-      .then(() => console.log('build post list success.'))
-      .catch(err => console.log(err))
-  },
+async function buildPost(post, config) {
+  // 单条文章
+  const html = marked(post.content, { breaks: true })
+  const templateStr = await fs.readFileAsync(`${config.templatePath}/post.pug`, 'utf8')
+  const template = pug.compile(templateStr, {
+    filename: 'index.html',
+    basedir: config.templatePath,
+  })
+  const htmlStr = template({
+    domain: config.domain,
+    title: post.data.title,
+    date: moment(post.data.date).format('MMMM Do YYYY, a'),
+    content: html,
+  })
+  await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, htmlStr)
+}
+
+async function buildPostList(postList, config) {
+  const templateStr = await fs.readFileAsync(`${config.templatePath}/index.pug`, 'utf8')
+  const template = pug.compile(templateStr, {
+    filename: 'index.html',
+    basedir: config.templatePath,
+  })
+  const htmlStr = template({
+    domain: config.domain,
+    articles: postList,
+  })
+  await fs.writeFileAsync(`${config.outputPath}/index.html`, htmlStr)
+}
+
+export {
+  getPostList,
+  buildPost,
+  buildPostList,
 }

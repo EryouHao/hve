@@ -19,3 +19,4 @@ blog/posts/*
 blog/public/*
 blog/config.yml
 blog/data.db
+blog/.*

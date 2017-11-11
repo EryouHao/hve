@@ -18,17 +18,19 @@
     <div class="btns">
       <preview></preview>
       <br><br>
-      <i-button type="success" long>Publish</i-button>
+      <publish></publish>
     </div>
   </div>
 </template>
 
 <script>
 import Preview from './preview/Preview'
+import Publish from './publish/Publish'
 
 export default {
   components: {
     Preview,
+    Publish,
   },
   data() {
     return {}

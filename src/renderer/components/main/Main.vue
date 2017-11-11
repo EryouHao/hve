@@ -4,7 +4,6 @@
     <div class="right">
       <div class="content">
         <router-view></router-view>
-        <!-- <post-list></post-list> -->
       </div>
       <div class="copy">
         2017 &copy; EryouHao
@@ -22,13 +21,9 @@ import Sidebar from '@/components/common/Sidebar'
 import PostList from '@/components/post/PostList'
 import {shell} from 'electron'
 import { getPostList } from '@/lib/util/post'
-import Publish from '../publish/Publish'
-import Preview from '@/components/common/preview/Preview'
 
 export default {
   components: {
-    Publish,
-    Preview,
     Sidebar,
     PostList,
   },

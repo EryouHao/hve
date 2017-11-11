@@ -2,6 +2,8 @@ const state = {
   source: null,
   domain: null,
   repo: null,
+  email: null,
+  username: null,
 }
 
 const mutations = {
@@ -9,6 +11,8 @@ const mutations = {
     state.source = payload.source
     state.domain = payload.domain
     state.repo = payload.repo
+    state.email = payload.email
+    state.username = payload.username
   },
 }
 

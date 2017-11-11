@@ -27,6 +27,20 @@
           </i-col>
         </i-row>
       </i-form-item>
+      <i-form-item label="Email">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.email"></i-input>
+          </i-col>
+        </i-row>
+      </i-form-item>
+      <i-form-item label="Username">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.username"></i-input>
+          </i-col>
+        </i-row>
+      </i-form-item>
       <i-form-item>
         <i-button type="primary" @click="save">保存</i-button>
       </i-form-item>
@@ -35,8 +49,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
 export default {
   data() {
     return {
@@ -44,6 +56,8 @@ export default {
         source: null,
         domain: null,
         repo: null,
+        email: null,
+        username: null,
       },
     }
   },
@@ -52,24 +66,19 @@ export default {
     this.form.source = setting.source
     this.form.domain = setting.domain
     this.form.repo = setting.repo
+    this.form.email = setting.email
+    this.form.username = setting.username
   },
   methods: {
-    ...mapActions({
-
-    }),
     updateSource(e) {
       this.form.source = e.target.files[0].path
     },
     save() {
-      const config = {
-        source: this.form.source,
-        domain: this.form.domain,
-        repo: this.form.repo,
-      }
       this.$dbConfig.find({}, (err, res) => {
         if (err) throw err
-        this.$dbConfig.update({_id: res[0]._id}, { $set: config }, {}, (err, res) => {
+        this.$dbConfig.update({_id: res[0]._id}, { $set: this.form }, {}, (err, res) => {
           if (err) throw err
+          this.$store.dispatch('updateSetting', this.form)
           this.$Message.success('update success.')
         })
       })

@@ -44,15 +44,14 @@ export default {
     },
     async firstPush() {
       console.log('first push')
-      console.log(this.source)
       try {
         await git.init()
         await git.addConfig('user.name', `${this.setting.username}`)
         await git.addConfig('user.email', `${this.setting.email}`)
         await git.add('./*')
         await git.commit('first commit!')
-        await git.addRemote('origin', `${this.setting.repo}`)
-        await git.push('-u', 'origin', 'master')
+        await git.addRemote('origin', `https://${this.setting.username}:${this.setting.token}@github.com/${this.setting.username}/${this.setting.repo}.git`)
+        await git.push('origin', `${this.setting.branch}`, {'--force': true}) // 强制推送
         this.loading = false
         this.$Message.success('Your first publish success! Congratulations!')
       } catch (e) {
@@ -67,7 +66,7 @@ export default {
         try {
           await git.add('./*')
           await git.commit(`update from hve: ${moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}`)
-          await git.push()
+          await git.push('origin', `${this.setting.branch}`)
           this.loading = false
           this.$Message.success('Publish done!')
         } catch (e) {

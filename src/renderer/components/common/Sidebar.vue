@@ -1,6 +1,9 @@
 <template>
   <div class="left">
     <div class="logo">
+      <div>
+        <img src="~@/assets/logo.png" alt="Hve" width="80px" height="80px">
+      </div>
       Hve
       <p>A static blog build tool.</p>
     </div>

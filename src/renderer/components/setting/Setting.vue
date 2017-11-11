@@ -27,10 +27,10 @@
           </i-col>
         </i-row>
       </i-form-item>
-      <i-form-item label="Email">
+      <i-form-item label="Branch">
         <i-row>
           <i-col span="16">
-            <i-input v-model="form.email"></i-input>
+            <i-input v-model="form.branch"></i-input>
           </i-col>
         </i-row>
       </i-form-item>
@@ -38,6 +38,20 @@
         <i-row>
           <i-col span="16">
             <i-input v-model="form.username"></i-input>
+          </i-col>
+        </i-row>
+      </i-form-item>
+      <i-form-item label="Email">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.email"></i-input>
+          </i-col>
+        </i-row>
+      </i-form-item>
+      <i-form-item label="Token">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.token"></i-input>
           </i-col>
         </i-row>
       </i-form-item>
@@ -56,6 +70,8 @@ export default {
         source: null,
         domain: null,
         repo: null,
+        branch: null,
+        token: null,
         email: null,
         username: null,
       },
@@ -66,6 +82,8 @@ export default {
     this.form.source = setting.source
     this.form.domain = setting.domain
     this.form.repo = setting.repo
+    this.form.branch = setting.branch
+    this.form.token = setting.token
     this.form.email = setting.email
     this.form.username = setting.username
   },

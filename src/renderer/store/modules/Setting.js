@@ -8,7 +8,7 @@ const state = {
 }
 
 const mutations = {
-  UPDATE(state, payload) {
+  UPDATE_SETTING(state, payload) {
     state.source = payload.source
     state.domain = payload.domain
     state.repo = payload.repo
@@ -21,7 +21,7 @@ const mutations = {
 
 const actions = {
   updateSetting({ commit }, form) {
-    commit('UPDATE', form)
+    commit('UPDATE_SETTING', form)
   },
 }
 

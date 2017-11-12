@@ -25,7 +25,6 @@ export default {
         'data.date': -1,
       }).exec((err, docs) => {
         if (err) console.log(err)
-        console.log(docs)
         this.postList = docs
       })
     },

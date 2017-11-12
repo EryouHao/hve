@@ -19,7 +19,7 @@
 <script>
 import Sidebar from '@/components/common/Sidebar'
 import PostList from '@/components/post/PostList'
-import {shell} from 'electron'
+// import {shell} from 'electron'
 import { getPostList } from '@/lib/util/post'
 
 export default {
@@ -62,9 +62,7 @@ export default {
       this.postList = await getPostList(postPath)
       this.$dbPosts.insert(this.postList, (err, ret) => {
         if (err) console.log(err)
-        console.log(ret)
       })
-      console.log(this.postList)
     },
     emptyDb() {
       this.$dbPosts.remove({}, { multi: true }, (err, num) => {
@@ -72,12 +70,8 @@ export default {
         this.$dbPosts.loadDatabase((err) => {
           if (err) console.log(err)
           // done
-          console.log('remove success', num)
         })
       })
-    },
-    preview() {
-      shell.openExternal('http://localhost:4000')
     },
   },
 }

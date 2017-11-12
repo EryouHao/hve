@@ -10,11 +10,9 @@ const Promise = require('bluebird')
 Promise.promisifyAll(fs)
 
 async function getPostList(postPath) {
-  console.log(postPath)
   const resultList = []
   const requestList = []
   const files = await fse.readdir(postPath)
-  console.log('files: ', files)
   files.forEach((item) => {
     if (item === '.DS_Store') {
       return
@@ -24,7 +22,7 @@ async function getPostList(postPath) {
   const results = await Promise.all(requestList)
   results.forEach((result, index) => {
     const post = matter(result)
-    post.fileName = files[index + 1].substring(0, result.length - 3) // 有待优化！
+    post.fileName = files[index + 1].substring(0, files[index + 1].length - 3) // 有待优化!
     resultList.push(post)
   })
   return Promise.resolve(resultList)
@@ -44,6 +42,7 @@ async function buildPost(post, config) {
     date: moment(post.data.date).format('MMMM Do YYYY, a'),
     content: html,
   })
+  console.log('post.fileName: ', post.fileName)
   await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, htmlStr)
 }
 

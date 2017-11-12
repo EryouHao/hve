@@ -22,6 +22,8 @@ async function getPostList(postPath) {
   const results = await Promise.all(requestList)
   results.forEach((result, index) => {
     const post = matter(result)
+    // 摘要
+    post.abstract = (post.content).substring(0, post.content.indexOf('<!-- more -->'))
     post.fileName = files[index + 1].substring(0, files[index + 1].length - 3) // 有待优化!
     resultList.push(post)
   })
@@ -52,10 +54,21 @@ async function buildPostList(postList, config) {
     filename: 'index.html',
     basedir: config.templatePath,
   })
+  const list = postList.map(post => {
+    post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
+    console.log(post.data.tags)
+    if (post.data.tags) {
+      post.data.tags = post.data.tags.split(' ')
+    } else {
+      post.data.tags = []
+    }
+    return post
+  })
   const htmlStr = template({
     domain: config.domain,
-    articles: postList,
+    articles: list,
   })
+  console.log(list)
   await fs.writeFileAsync(`${config.outputPath}/index.html`, htmlStr)
 }
 

@@ -7,19 +7,33 @@
   background: rgba(0, 0, 0, 0.8)
   text-align: center
   color: $e-gray
-  .logo
-    height: 200px
+  display: flex
+  flex-direction: column
+  .logo-container
     display: flex
     flex-direction: column
     justify-content: center
     font-size: 24px
+    margin-bottom: 2em
+    .logo
+      width: 120px
+      height: 120px
+      border-radius: 50%
+      margin: 2em auto
   .menu
+    flex: 1
     a
       display: block
       line-height: 48px
       color: $e-gray
+      font-size: 1.85rem
       background: transparent
       transition: all 0.3s
       &:hover
         color: $e-white
         background: rgba(0, 0, 0, 0.23)
+  .footer
+    margin: 1.75em 0 2em
+    font-size: 1.2rem
+    color: #808080
+    

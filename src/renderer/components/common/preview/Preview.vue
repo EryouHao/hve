@@ -32,6 +32,7 @@ export default {
         templatePath: templatePath,
         outputPath: outputPath,
         domain: this.$store.state.Setting.domain,
+        pageSize: 5,
       }
       // 渲染文章
       await fse.ensureDir(`${outputPath}/post`)

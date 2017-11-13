@@ -10,3 +10,8 @@ div.post-container
         div.tag-container
           each tag in post.data.tags
             span= `#${tag}`
+div.pagination
+  if prevLink !== ''
+    a(href=`${prevLink}`) 上一页
+  if nextLink !== ''
+    a(href=`${nextLink}`) 下一页

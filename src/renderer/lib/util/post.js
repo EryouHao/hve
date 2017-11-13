@@ -64,12 +64,41 @@ async function buildPostList(postList, config) {
     }
     return post
   })
-  const htmlStr = template({
+  const data = {
     domain: config.domain,
-    articles: list,
-  })
-  console.log(list)
-  await fs.writeFileAsync(`${config.outputPath}/index.html`, htmlStr)
+    articles: [],
+    prevLink: '',
+    nextLink: '',
+  }
+  // list.length = 15
+  const perPage = config.pageSize
+  for (let i = 0, len = list.length; (i * perPage) < len; i = i + 1) {
+    data.articles = list.slice(perPage * i, (i + 1) * perPage)
+    if (i === 0) {
+      data.prevLink = ''
+    } else if (i === 1) {
+      data.prevLink = `${config.domain}/`
+    } else {
+      data.prevLink = `${config.domain}/page/${i}/`
+    }
+    if (((i + 1) * perPage) >= len) {
+      data.nextLink = ''
+    } else {
+      data.nextLink = `${config.domain}/page/${i + 2}/`
+    }
+    // 输出
+    const htmlStr = template(data)
+    let outputDir
+    if (i === 0) {
+      outputDir = `${config.outputPath}`
+    } else {
+      outputDir = `${config.outputPath}/page/${i + 1}`
+    }
+    await fse.ensureDir(outputDir)
+    console.log('输出目录：', outputDir)
+    await fs.writeFileAsync(`${outputDir}/index.html`, htmlStr)
+    console.log('共生成文章数：', len)
+  }
 }
 
 export {

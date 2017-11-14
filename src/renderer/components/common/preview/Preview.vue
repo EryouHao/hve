@@ -28,11 +28,12 @@ export default {
       const basePath = this.$store.state.Setting.source
       const templatePath = `${basePath}/theme/easy/layout`
       const outputPath = `${basePath}/public`
+      console.log(this.$store.state)
       const config = {
         templatePath: templatePath,
         outputPath: outputPath,
         domain: this.$store.state.Setting.domain,
-        pageSize: 5,
+        pageSize: this.$store.state.Website.pageSize,
       }
       // 渲染文章
       await fse.ensureDir(`${outputPath}/post`)

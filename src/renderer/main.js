@@ -15,6 +15,7 @@ Vue.config.productionTip = false
 
 Vue.prototype.$dbPosts = db.posts
 Vue.prototype.$dbConfig = db.config
+Vue.prototype.$dbWeb = db.website
 
 Vue.use(iView)
 /* eslint-disable no-new */

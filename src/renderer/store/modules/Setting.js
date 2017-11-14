@@ -20,7 +20,7 @@ const mutations = {
 }
 
 const actions = {
-  updateSetting({ commit }, form) {
+  updateRemoteSetting({ commit }, form) {
     commit('UPDATE_SETTING', form)
   },
 }

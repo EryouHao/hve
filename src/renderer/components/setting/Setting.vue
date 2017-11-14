@@ -96,7 +96,7 @@ export default {
         if (err) throw err
         this.$dbConfig.update({_id: res[0]._id}, { $set: this.form }, {}, (err, res) => {
           if (err) throw err
-          this.$store.dispatch('updateSetting', this.form)
+          this.$store.dispatch('updateRemoteSetting', this.form)
           this.$Message.success('update success.')
         })
       })

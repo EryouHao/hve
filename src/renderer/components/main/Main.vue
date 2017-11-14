@@ -42,7 +42,7 @@ export default {
   created() {
     this.$dbConfig.find({}, (err, res) => {
       if (err) throw err
-      this.$store.dispatch('updateSetting', res[0])
+      this.$store.dispatch('updateRemoteSetting', res[0])
       this.emptyDb()
       this.getPostList()
     })

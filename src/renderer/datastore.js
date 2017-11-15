@@ -15,4 +15,9 @@ const website = new Datastore({
   filename: path.join(remote.app.getPath('documents'), 'hve-blog/db/website.db'),
 })
 
-export { posts, config, website }
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+const adapter = new FileSync(path.join(remote.app.getPath('documents'), 'hve-blog/db/db.json'))
+const db = low(adapter)
+
+export { posts, config, website, db }

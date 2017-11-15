@@ -91,15 +91,19 @@ export default {
     updateSource(e) {
       this.form.source = e.target.files[0].path
     },
-    save() {
-      this.$dbConfig.find({}, (err, res) => {
-        if (err) throw err
-        this.$dbConfig.update({_id: res[0]._id}, { $set: this.form }, {}, (err, res) => {
-          if (err) throw err
-          this.$store.dispatch('updateRemoteSetting', this.form)
-          this.$Message.success('update success.')
-        })
-      })
+    async save() {
+      // this.$dbConfig.find({}, (err, res) => {
+      //   if (err) throw err
+      //   this.$dbConfig.update({_id: res[0]._id}, { $set: this.form }, {}, (err, res) => {
+      //     if (err) throw err
+      //     this.$store.dispatch('updateRemoteSetting', this.form)
+      //     this.$Message.success('update success.')
+      //   })
+      // })
+      await this.$db.set('remote', this.form)
+        .write()
+      this.$store.dispatch('updateRemoteSetting', this.form)
+      this.$Message.success('update success.')
     },
   },
 }

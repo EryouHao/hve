@@ -66,6 +66,7 @@
     "github-markdown-css": "^2.9.0",
     "gray-matter": "^3.0.3",
     "iview": "^2.6.0",
+    "lowdb": "^1.0.0",
     "marked": "^0.3.6",
     "moment": "^2.19.1",
     "nedb": "^1.8.0",

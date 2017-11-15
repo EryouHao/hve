@@ -17,6 +17,8 @@ Vue.prototype.$dbPosts = db.posts
 Vue.prototype.$dbConfig = db.config
 Vue.prototype.$dbWeb = db.website
 
+Vue.prototype.$db = db.db
+
 Vue.use(iView)
 /* eslint-disable no-new */
 new Vue({

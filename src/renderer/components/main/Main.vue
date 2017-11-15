@@ -46,6 +46,11 @@ export default {
       this.emptyDb()
       this.getPostList()
     })
+    this.$db.defaults({
+      posts: [],
+      user: {},
+    }).write()
+    console.log(this.$db.get('posts').value())
   },
   methods: {
     toggleClick() {

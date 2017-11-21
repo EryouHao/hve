@@ -40,17 +40,18 @@ export default {
     },
   },
   created() {
-    this.$dbConfig.find({}, (err, res) => {
-      if (err) throw err
-      this.$store.dispatch('updateRemoteSetting', res[0])
-      this.emptyDb()
-      this.getPostList()
-    })
-    this.$db.defaults({
+    console.log(this.$store)
+    const config = this.$db.get('remote').value()
+    this.$store.dispatch('updateRemoteSetting', config)
+    const siteConfig = this.$site.get('config').value()
+    this.$store.dispatch('updateWeSetting', siteConfig)
+    this.emptyDb()
+    this.getPostList()
+    this.$site.defaults({
       posts: [],
       user: {},
     }).write()
-    console.log(this.$db.get('posts').value())
+    // console.log(this.$db.get('posts').value())
   },
   methods: {
     toggleClick() {

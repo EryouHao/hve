@@ -27,9 +27,16 @@ export default {
       },
     }
   },
+  created() {
+    const website = this.$store.state.Website
+    console.log(website)
+    this.form.title = website.title
+    this.form.pageSize = website.pageSize
+  },
   methods: {
     async save() {
-      await this.$dbWeb.insert(this.form)
+      await this.$site.set('config', this.form).write()
+      // await this.$site.insert(this.form)
       this.$store.dispatch('updateWebSetting', this.form)
       this.$Message.success('网站设置已保存')
       console.log('saved')

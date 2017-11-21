@@ -20,4 +20,6 @@ const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync(path.join(remote.app.getPath('documents'), 'hve-blog/db/db.json'))
 const db = low(adapter)
 
-export { posts, config, website, db }
+const site = low(new FileSync(path.join(remote.app.getPath('documents'), 'hve-blog/db/site.json')))
+
+export { posts, config, website, db, site }

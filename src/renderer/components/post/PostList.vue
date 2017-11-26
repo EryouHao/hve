@@ -1,7 +1,13 @@
 <template>
   <div class="post-list">
-    <p class="post" v-for="(post, index) in postList" @mouseover="hover(index)" @mouseout="blur">
-      {{ post.data.title }}
+    <p
+      class="post"
+      v-show="!preview"
+      v-for="(post, index) in postList"
+      @mouseover="hover(index)"
+      @mouseout="blur"
+    >
+      <span @click="showPost(post)">{{ post.data.title }}</span>
       <i-poptip
         v-if="hovered && currentIndex === index"
         confirm
@@ -17,6 +23,7 @@
       </i-poptip>
       <time v-else>{{ post.data.date | formatDate }}</time>
     </p>
+    <post-preview v-if="preview" :post="currentPost"></post-preview>
   </div>
 </template>
 
@@ -24,13 +31,20 @@
 import moment from 'moment'
 import { getPostList } from '@/lib/util/post'
 import fse from 'fs-extra'
+import PostPreview from './PostPreview'
+import marked from 'marked'
 
 export default {
+  components: {
+    PostPreview,
+  },
   data() {
     return {
       postList: [],
       hovered: false,
       currentIndex: -1,
+      preview: false,
+      currentPost: null,
     }
   },
   async created() {
@@ -79,6 +93,11 @@ export default {
       this.currentIndex = -1
       this.hovered = false
     },
+    showPost(post) {
+      post.htmlContent = marked(post.content, { breaks: true })
+      this.currentPost = post
+      this.preview = true
+    },
   },
   filters: {
     formatDate(date) {
@@ -99,6 +118,9 @@ export default {
       padding: 6px 10px;
       line-height: 24px;
       transition: all 0.3s;
+      span {
+        cursor: pointer;
+      }
       &:hover {
         background: #eee;
       }

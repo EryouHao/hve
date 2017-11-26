@@ -63,6 +63,9 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import { setting as types } from '@/store/types'
+
 export default {
   data() {
     return {
@@ -88,12 +91,15 @@ export default {
     this.form.username = setting.username
   },
   methods: {
+    ...mapActions({
+      acUpdateSetting: types.actions.UPDATE_SETTING,
+    }),
     updateSource(e) {
       this.form.source = e.target.files[0].path
     },
     async save() {
       await this.$db.set('remote', this.form).write()
-      this.$store.dispatch('updateRemoteSetting', this.form)
+      this.acUpdateSetting(this.form)
       this.$Message.success('update success.')
     },
   },

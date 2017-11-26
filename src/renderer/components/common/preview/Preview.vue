@@ -13,27 +13,26 @@ export default {
     return {}
   },
   methods: {
-    preview() {
-      let posts = null
-      this.$dbPosts.find({}).sort({
-        'data.date': -1,
-      }).exec((err, docs) => {
-        if (err) console.log(err)
-        posts = docs
-        this.build(posts)
-        // shell.openExternal('http://localhost:4000')
-      })
+    async preview() {
+      const posts = await this.$db
+        .get('posts')
+        .sortBy('data.date')
+        .desc()
+        .value()
+      this.build(posts)
+      // shell.openExternal('http://localhost:4000')
     },
     async build(posts) {
-      const basePath = this.$store.state.Setting.source
+      const basePath = this.$store.state.setting.source
       const templatePath = `${basePath}/theme/easy/layout`
       const outputPath = `${basePath}/public`
       console.log(this.$store.state)
       const config = {
+        title: this.$store.state.website.title,
         templatePath: templatePath,
         outputPath: outputPath,
-        domain: this.$store.state.Setting.domain,
-        pageSize: this.$store.state.Website.pageSize,
+        domain: this.$store.state.setting.domain,
+        pageSize: this.$store.state.website.pageSize,
       }
       // 渲染文章
       await fse.ensureDir(`${outputPath}/post`)

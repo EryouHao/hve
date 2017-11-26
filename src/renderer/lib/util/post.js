@@ -40,7 +40,7 @@ async function buildPost(post, config) {
   })
   const htmlStr = template({
     domain: config.domain,
-    title: post.data.title,
+    title: config.title,
     date: moment(post.data.date).format('MMMM Do YYYY, a'),
     content: html,
   })
@@ -65,6 +65,7 @@ async function buildPostList(postList, config) {
     return post
   })
   const data = {
+    title: config.title,
     domain: config.domain,
     articles: [],
     prevLink: '',

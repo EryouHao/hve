@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import { website as types } from '@/store/types'
 export default {
   data() {
     return {
@@ -28,16 +30,17 @@ export default {
     }
   },
   created() {
-    const website = this.$store.state.Website
-    console.log(website)
+    const website = this.$store.state.website
     this.form.title = website.title
     this.form.pageSize = website.pageSize
   },
   methods: {
+    ...mapActions({
+      acUpdateSetting: types.actions.UPDATE_SETTING,
+    }),
     async save() {
       await this.$site.set('config', this.form).write()
-      // await this.$site.insert(this.form)
-      this.$store.dispatch('updateWebSetting', this.form)
+      await this.acUpdateSetting(this.form)
       this.$Message.success('网站设置已保存')
       console.log('saved')
     },

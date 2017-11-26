@@ -17,21 +17,18 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
+import { setting, website } from '@/store/types'
 import Sidebar from '@/components/common/Sidebar'
-import PostList from '@/components/post/PostList'
-// import {shell} from 'electron'
-import { getPostList } from '@/lib/util/post'
 
 export default {
   components: {
     Sidebar,
-    PostList,
   },
   data() {
     return {
       spanLeft: 5,
       spanRight: 19,
-      postList: [],
     }
   },
   computed: {
@@ -39,21 +36,19 @@ export default {
       return this.spanLeft === 5 ? 14 : 24
     },
   },
-  created() {
-    console.log(this.$store)
+  async created() {
+    // remote setting
     const config = this.$db.get('remote').value()
-    this.$store.dispatch('updateRemoteSetting', config)
+    this.acUpdateSetting(config)
+    // website setting
     const siteConfig = this.$site.get('config').value()
-    this.$store.dispatch('updateWeSetting', siteConfig)
-    this.emptyDb()
-    this.getPostList()
-    this.$site.defaults({
-      posts: [],
-      user: {},
-    }).write()
-    // console.log(this.$db.get('posts').value())
+    this.acUpdateWebsiteSetting(siteConfig)
   },
   methods: {
+    ...mapActions({
+      acUpdateSetting: setting.actions.UPDATE_SETTING,
+      acUpdateWebsiteSetting: website.actions.UPDATE_SETTING,
+    }),
     toggleClick() {
       if (this.spanLeft === 5) {
         this.spanLeft = 2
@@ -62,22 +57,6 @@ export default {
         this.spanLeft = 5
         this.spanRight = 19
       }
-    },
-    async getPostList() {
-      const postPath = `${this.$store.state.Setting.source}/posts`
-      this.postList = await getPostList(postPath)
-      this.$dbPosts.insert(this.postList, (err, ret) => {
-        if (err) console.log(err)
-      })
-    },
-    emptyDb() {
-      this.$dbPosts.remove({}, { multi: true }, (err, num) => {
-        if (err) console.log(err)
-        this.$dbPosts.loadDatabase((err) => {
-          if (err) console.log(err)
-          // done
-        })
-      })
     },
   },
 }

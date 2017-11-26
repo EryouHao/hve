@@ -1,3 +1,5 @@
+import { setting as types } from '../types'
+
 const state = {
   source: null,
   domain: null,
@@ -8,7 +10,7 @@ const state = {
 }
 
 const mutations = {
-  UPDATE_SETTING(state, payload) {
+  [types.mutations.UPDATE_SETTING](state, payload) {
     state.source = payload.source
     state.domain = payload.domain
     state.repo = payload.repo
@@ -20,8 +22,8 @@ const mutations = {
 }
 
 const actions = {
-  updateRemoteSetting({ commit }, form) {
-    commit('UPDATE_SETTING', form)
+  [types.actions.UPDATE_SETTING]({ commit }, form) {
+    commit(types.mutations.UPDATE_SETTING, form)
   },
 }
 

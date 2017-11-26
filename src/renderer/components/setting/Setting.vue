@@ -78,7 +78,7 @@ export default {
     }
   },
   created() {
-    const setting = this.$store.state.Setting
+    const setting = this.$store.state.setting
     this.form.source = setting.source
     this.form.domain = setting.domain
     this.form.repo = setting.repo

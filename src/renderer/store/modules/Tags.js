@@ -1,22 +1,24 @@
+import { tags as types } from '../types'
+
 const state = {
   tags: [],
 }
 
 const mutations = {
-  UPDATE_TAGS(state, payload) {
+  [types.mutations.UPDATE_TAGS](state, payload) {
     state.tags = payload
   },
-  ADD_TAG(state, tag) {
+  [types.mutations.ADD_TAG](state, tag) {
     state.tags.push(tag)
   },
 }
 
 const actions = {
-  updateTags({ commit }, tags) {
-    commit('UPDATE_TAGS', tags)
+  [types.actions.UPDATE_TAGS]({ commit }, tags) {
+    commit(types.mutations.UPDATE_TAGS, tags)
   },
-  addTag({ commit }, tag) {
-    commit('ADD_TAG', tag)
+  [types.actions.ADD_TAG]({ commit }, tag) {
+    commit(types.mutations.ADD_TAG, tag)
   },
 }
 

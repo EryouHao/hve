@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import { tags } from '@/store/types'
 import fs from 'fs'
 import moment from 'moment'
 import matter from 'gray-matter'
@@ -67,6 +69,10 @@ export default {
     this.initTags()
   },
   methods: {
+    ...mapActions({
+      acUpdateTags: tags.actions.UPDATE_TAGS,
+      acAddTag: tags.actions.ADD_TAG,
+    }),
     async save() {
       const mdStr = `---
 title: ${this.form.title}
@@ -76,7 +82,7 @@ tags: ${this.form.tags.join(' ')}
 ${this.form.content}
 `
       console.log(mdStr)
-      const basePath = this.$store.state.Setting.source
+      const basePath = this.$store.state.setting.source
       console.log(this.$store.state)
       console.log('mdStr: ', mdStr)
       try {
@@ -84,16 +90,15 @@ ${this.form.content}
         await fs.writeFile(`${basePath}/posts/${this.form.fileName}.md`, mdStr)
         const post = matter(mdStr)
         post.fileName = this.form.fileName // 更新DB时添加fileName字段
-        await this.$dbPosts.insert(post)
+        await this.$db.get('posts').push(post).write()
         this.$Message.success('Post is saved!')
-        console.log('save success.')
       } catch (e) {
         console.log(e)
       }
     },
     addTag() {
       this.tags.push(this.newTag)
-      this.$store.dispatch('addTag', this.newTag)
+      this.acAddTag(this.newTag)
       this.newTag = ''
     },
     selectTag(tag) {
@@ -104,19 +109,17 @@ ${this.form.content}
         this.form.tags.splice(index, 1)
       }
     },
-    initTags() {
-      this.$dbPosts.find({}, (err, res) => {
-        if (err) throw err
-        let tags = []
-        res.forEach((item) => {
-          if (item.data.tags && item.data.tags !== '') {
-            tags = tags.concat(item.data.tags.split(' '))
-          }
-        })
-        tags = Array.from(new Set(tags))
-        this.$store.dispatch('updateTags', tags)
-        this.tags = this.$store.state.Tags.tags.slice()
+    async initTags() {
+      const posts = await this.$db.get('posts').value()
+      let tags = []
+      posts.forEach((item) => {
+        if (item.data.tags && item.data.tags !== '') {
+          tags = tags.concat(item.data.tags.split(' '))
+        }
       })
+      tags = Array.from(new Set(tags))
+      this.acUpdateTags(tags)
+      this.tags = this.$store.state.tags.tags.slice()
     },
     checkTitle() {
       if (this.form.title !== '') {

@@ -14,6 +14,9 @@
       <i-menu-item name="theme">
         <span class="text">主题</span>
       </i-menu-item>
+      <i-menu-item name="single-page">
+        <span class="text">单页</span>
+      </i-menu-item>
       <i-menu-item name="setting">
         <span class="text">配置</span>
       </i-menu-item>

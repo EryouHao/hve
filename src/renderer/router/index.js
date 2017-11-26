@@ -5,6 +5,7 @@ import PostList from '@/components/post/PostList'
 import NewPost from '@/components/post/NewPost'
 import Setting from '@/components/setting/Setting'
 import Theme from '@/components/theme/Theme'
+import SinglePage from '@/components/single-page/SinglePage'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
           path: '/theme',
           name: 'theme',
           component: Theme,
+        },
+        {
+          path: '/single-page',
+          name: 'single-page',
+          component: SinglePage,
         },
         {
           path: '/setting',

@@ -32,7 +32,7 @@ export default {
     async publish() {
       this.loading = true
       // 初始化参数
-      this.setting = this.$store.state.Setting
+      this.setting = this.$store.state.setting
       git = simpleGit(`${this.setting.source}/public`)
       // 判断是否存在本地 git 仓库
       const exist = await fs.existsSync(`${this.setting.source}/public/.git/`)

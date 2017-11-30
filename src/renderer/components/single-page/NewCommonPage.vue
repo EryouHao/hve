@@ -23,6 +23,9 @@
 </template>
 
 <script>
+import fs from 'fs'
+import fse from 'fs-extra'
+import matter from 'gray-matter'
 import MarkdownEditor from 'vue-simplemde/src/markdown-editor'
 
 export default {
@@ -49,8 +52,34 @@ export default {
         this.form.linkName = ''
       }
     },
-    save() {
-      console.log(this.form)
+    async save() {
+      const mdStr = `---
+title: ${this.form.title}
+---
+${this.form.content}
+`
+      const basePath = this.$store.state.setting.source
+      try {
+        // 写文件
+        await fse.ensureDir(`${basePath}/pages/${this.form.linkName}`)
+        await fs.writeFile(`${basePath}/pages/${this.form.linkName}/index.md`, mdStr)
+        // 写 JSON 数据库
+        const page = matter(mdStr)
+        page.linkName = this.form.linkName
+        if (!this.$db.has('pages').value()) {
+          this.$db.defaults({ pages: [] }).write()
+        }
+        const pageObj = this.$db.get('pages').find({linkName: this.form.linkName})
+        const pageExist = pageObj.value()
+        if (pageExist) {
+          await pageObj.assign(page).write()
+        } else {
+          await this.$db.get('pages').push(page).write()
+        }
+        this.$Message.success('Page is saved!')
+      } catch (e) {
+        console.log(e)
+      }
     },
   },
 }

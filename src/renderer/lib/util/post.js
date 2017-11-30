@@ -40,7 +40,8 @@ async function buildPost(post, config) {
   })
   const htmlStr = template({
     domain: config.domain,
-    title: config.title,
+    website: config.website,
+    title: post.data.title,
     date: moment(post.data.date).format('MMMM Do YYYY, a'),
     content: html,
   })
@@ -65,13 +66,13 @@ async function buildPostList(postList, config) {
     return post
   })
   const data = {
-    title: config.title,
+    website: config.website,
     domain: config.domain,
     articles: [],
     prevLink: '',
     nextLink: '',
   }
-  // list.length = 15
+  // 分页
   const perPage = config.pageSize
   for (let i = 0, len = list.length; (i * perPage) < len; i = i + 1) {
     data.articles = list.slice(perPage * i, (i + 1) * perPage)
@@ -102,8 +103,28 @@ async function buildPostList(postList, config) {
   }
 }
 
+async function buildSinglePage(pages, config) {
+  for (let page of pages) {
+    const html = marked(page.content, { breaks: true })
+    const templateStr = await fs.readFileAsync(`${config.templatePath}/page.pug`, 'utf8')
+    const template = pug.compile(templateStr, {
+      filename: 'index.html',
+      basedir: config.templatePath,
+    })
+    const htmlStr = template({
+      domain: config.domain,
+      website: config.website,
+      title: page.data.title,
+      content: html,
+    })
+    fse.ensureDir(`${config.outputPath}/${page.linkName}`)
+    await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, htmlStr)
+  }
+}
+
 export {
   getPostList,
   buildPost,
   buildPostList,
+  buildSinglePage,
 }

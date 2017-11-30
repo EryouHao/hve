@@ -5,7 +5,7 @@
 <script>
 // import { shell } from 'electron'
 import fse from 'fs-extra'
-import { buildPost, buildPostList } from '@/lib/util/post'
+import { buildPost, buildPostList, buildSinglePage } from '@/lib/util/post'
 import { renderStylus } from '@/lib/util/theme'
 
 export default {
@@ -19,16 +19,19 @@ export default {
         .sortBy('data.date')
         .desc()
         .value()
-      this.build(posts)
+      const pages = await this.$db
+        .get('pages')
+        .value()
+      this.build(posts, pages)
       // shell.openExternal('http://localhost:4000')
     },
-    async build(posts) {
+    async build(posts, pages) {
       const basePath = this.$store.state.setting.source
       const templatePath = `${basePath}/theme/easy/layout`
       const outputPath = `${basePath}/public`
       console.log(this.$store.state)
       const config = {
-        title: this.$store.state.website.title,
+        website: this.$store.state.website,
         templatePath: templatePath,
         outputPath: outputPath,
         domain: this.$store.state.setting.domain,
@@ -40,7 +43,10 @@ export default {
       posts.forEach((post) => {
         buildPost(post, config)
       })
+      // 渲染列表页
       buildPostList(posts, config)
+      // 渲染单页
+      buildSinglePage(pages, config)
       // 编译 stylus
       const stylusPath = `${basePath}/theme/easy/source/stylus`
       const cssPath = `${basePath}/public/css`

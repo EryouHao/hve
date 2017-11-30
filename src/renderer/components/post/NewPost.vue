@@ -81,7 +81,6 @@ tags: ${this.form.tags.join(' ')}
 ---
 ${this.form.content}
 `
-      console.log(mdStr)
       const basePath = this.$store.state.setting.source
       console.log(this.$store.state)
       console.log('mdStr: ', mdStr)

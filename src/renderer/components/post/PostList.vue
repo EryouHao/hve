@@ -114,13 +114,14 @@ export default {
       display: flex;
       justify-content: space-between;
       padding: 6px 10px;
-      line-height: 24px;
+      line-height: 25px;
       transition: all 0.3s;
       span {
         cursor: pointer;
       }
       &:hover {
         background: #eee;
+        padding-left: 15px;
       }
     }
   }

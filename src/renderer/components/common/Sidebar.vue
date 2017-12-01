@@ -22,6 +22,8 @@
       </i-menu-item>
     </i-menu>
     <div class="btns">
+      <backup></backup>
+      <br><br>
       <preview></preview>
       <br><br>
       <publish></publish>
@@ -32,11 +34,12 @@
 <script>
 import Preview from './preview/Preview'
 import Publish from './publish/Publish'
-
+import Backup from './backup/Backup'
 export default {
   components: {
     Preview,
     Publish,
+    Backup,
   },
   data() {
     return {}

@@ -30,30 +30,54 @@ async function getPostList(postPath) {
   return Promise.resolve(resultList)
 }
 
-async function buildPost(post, config) {
-  // 单条文章
-  const html = marked(post.content, { breaks: true })
-  const templateStr = await fs.readFileAsync(`${config.templatePath}/post.pug`, 'utf8')
-  const template = pug.compile(templateStr, {
-    filename: 'index.html',
-    basedir: config.templatePath,
+async function getPageList(pagePath) {
+  const resultList = []
+  const requestList = []
+  const dirs = await fse.readdir(pagePath)
+  dirs.forEach(dir => {
+    requestList.push(fs.readFileAsync(`${pagePath}/${dir}/index.md`, 'utf8'))
   })
-  const htmlStr = template({
-    domain: config.domain,
-    website: config.website,
-    title: post.data.title,
-    date: moment(post.data.date).format('MMMM Do YYYY, a'),
-    content: html,
+  const results = await Promise.all(requestList)
+  results.forEach((result, index) => {
+    const page = matter(result)
+    page.linkName = dirs[index]
+    resultList.push(page)
   })
-  console.log('post.fileName: ', post.fileName)
-  await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, htmlStr)
+  return Promise.resolve(resultList)
 }
 
-async function buildPostList(postList, config) {
-  const templateStr = await fs.readFileAsync(`${config.templatePath}/index.pug`, 'utf8')
-  const template = pug.compile(templateStr, {
+/**
+ * 文章页
+ * @param {Object} post 
+ * @param {Object} config 
+ */
+async function buildPost(post, config) {
+  const contentHtml = marked(post.content, { breaks: true })
+  const template = pug.compileFile(`${config.templatePath}/post.pug`, {
     filename: 'index.html',
     basedir: config.templatePath,
+    pretty: true,
+  })
+  const postHtml = template({
+    domain: config.domain,
+    title: post.data.title,
+    date: moment(post.data.date).format('MMMM Do YYYY, a'),
+    content: contentHtml,
+  })
+  const html = await buildHtmlWithLayout(config, postHtml)
+  await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, html)
+}
+
+/**
+ * 首页 分页
+ * @param {Array} postList 
+ * @param {Object} config 
+ */
+async function buildPostList(postList, config) {
+  const template = pug.compileFile(`${config.templatePath}/index.pug`, {
+    filename: 'index.html',
+    basedir: config.templatePath,
+    pretty: true,
   })
   const list = postList.map(post => {
     post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
@@ -66,7 +90,6 @@ async function buildPostList(postList, config) {
     return post
   })
   const data = {
-    website: config.website,
     domain: config.domain,
     articles: [],
     prevLink: '',
@@ -89,7 +112,8 @@ async function buildPostList(postList, config) {
       data.nextLink = `${config.domain}/page/${i + 2}/`
     }
     // 输出
-    const htmlStr = template(data)
+    const postListHtml = template(data)
+    const html = await buildHtmlWithLayout(config, postListHtml)
     let outputDir
     if (i === 0) {
       outputDir = `${config.outputPath}`
@@ -98,28 +122,52 @@ async function buildPostList(postList, config) {
     }
     await fse.ensureDir(outputDir)
     console.log('输出目录：', outputDir)
-    await fs.writeFileAsync(`${outputDir}/index.html`, htmlStr)
+    await fs.writeFileAsync(`${outputDir}/index.html`, html)
     console.log('共生成文章数：', len)
   }
 }
-
+/**
+ * 单页
+ * @param {Array} pages 
+ * @param {Object} config 
+ */
 async function buildSinglePage(pages, config) {
   for (let page of pages) {
-    const html = marked(page.content, { breaks: true })
+    const contentHtml = marked(page.content, { breaks: true })
     const templateStr = await fs.readFileAsync(`${config.templatePath}/page.pug`, 'utf8')
     const template = pug.compile(templateStr, {
       filename: 'index.html',
       basedir: config.templatePath,
+      pretty: true,
     })
-    const htmlStr = template({
-      domain: config.domain,
-      website: config.website,
+    const pageHtml = template({
       title: page.data.title,
-      content: html,
+      content: contentHtml,
     })
+    const html = await buildHtmlWithLayout(config, pageHtml)
+    console.log('html: ', html)
     fse.ensureDir(`${config.outputPath}/${page.linkName}`)
-    await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, htmlStr)
+    await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, html)
   }
+}
+
+/**
+ * 基本继承布局
+ * @param {Object} config 
+ * @param {String} content 
+ */
+async function buildHtmlWithLayout(config, content) {
+  const template = pug.compileFile(`${config.templatePath}/layout.pug`, {
+    filename: 'index.html',
+    basedir: config.templatePath,
+    pretty: true,
+  })
+  const html = template({
+    website: config.website,
+    domain: config.domain,
+    content: content,
+  })
+  return html
 }
 
 export {
@@ -127,4 +175,5 @@ export {
   buildPost,
   buildPostList,
   buildSinglePage,
+  getPageList,
 }

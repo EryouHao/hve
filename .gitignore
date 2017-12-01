@@ -20,3 +20,4 @@ blog/public/*
 blog/config.yml
 blog/data.db
 blog/.*
+blog/pages/*

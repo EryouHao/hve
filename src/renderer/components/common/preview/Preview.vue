@@ -21,6 +21,7 @@ export default {
         .value()
       const pages = await this.$db
         .get('pages')
+        .sortBy('data.index')
         .value()
       this.build(posts, pages)
       // shell.openExternal('http://localhost:4000')

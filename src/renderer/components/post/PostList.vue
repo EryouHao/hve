@@ -49,9 +49,7 @@ export default {
   },
   async created() {
     // init posts
-    this.$db.defaults({
-      posts: [],
-    })
+    this.$db.defaults({ posts: [] })
     // empty posts
     await this.$db.get('posts').remove().write()
     // read posts

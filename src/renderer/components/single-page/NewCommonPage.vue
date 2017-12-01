@@ -29,6 +29,9 @@ import matter from 'gray-matter'
 import MarkdownEditor from 'vue-simplemde/src/markdown-editor'
 
 export default {
+  props: {
+    page: Object,
+  },
   components: {
     MarkdownEditor,
   },
@@ -38,8 +41,18 @@ export default {
         title: '',
         linkName: '',
         content: '',
+        index: 0,
       },
       showLink: false,
+    }
+  },
+  created() {
+    if (this.page) {
+      this.showLink = true
+      this.form.title = this.page.data.title
+      this.form.content = this.page.content
+      this.form.index = this.page.data.index
+      this.form.linkName = this.page.linkName
     }
   },
   methods: {

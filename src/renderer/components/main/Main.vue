@@ -51,15 +51,6 @@ export default {
       acUpdateSetting: setting.actions.UPDATE_SETTING,
       acUpdateWebsiteSetting: website.actions.UPDATE_SETTING,
     }),
-    toggleClick() {
-      if (this.spanLeft === 5) {
-        this.spanLeft = 2
-        this.spanRight = 22
-      } else {
-        this.spanLeft = 5
-        this.spanRight = 19
-      }
-    },
   },
 }
 </script>

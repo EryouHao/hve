@@ -48,8 +48,8 @@ async function getPageList(pagePath) {
 
 /**
  * 文章页
- * @param {Object} post 
- * @param {Object} config 
+ * @param {Object} post
+ * @param {Object} config
  */
 async function buildPost(post, config) {
   const contentHtml = marked(post.content, { breaks: true })
@@ -70,8 +70,8 @@ async function buildPost(post, config) {
 
 /**
  * 首页 分页
- * @param {Array} postList 
- * @param {Object} config 
+ * @param {Array} postList
+ * @param {Object} config
  */
 async function buildPostList(postList, config) {
   const template = pug.compileFile(`${config.templatePath}/index.pug`, {
@@ -128,8 +128,8 @@ async function buildPostList(postList, config) {
 }
 /**
  * 单页
- * @param {Array} pages 
- * @param {Object} config 
+ * @param {Array} pages
+ * @param {Object} config
  */
 async function buildSinglePage(pages, config) {
   for (let page of pages) {
@@ -152,8 +152,8 @@ async function buildSinglePage(pages, config) {
 
 /**
  * 基本继承布局
- * @param {Object} config 
- * @param {String} content 
+ * @param {Object} config
+ * @param {String} content
  */
 async function buildHtmlWithLayout(config, content) {
   const template = pug.compileFile(`${config.templatePath}/layout.pug`, {

@@ -55,6 +55,13 @@
           </i-col>
         </i-row>
       </i-form-item>
+      <i-form-item label="BackupRepo">
+        <i-row>
+          <i-col span="16">
+            <i-input v-model="form.backupRepo"></i-input>
+          </i-col>
+        </i-row>
+      </i-form-item>
       <i-form-item>
         <i-button type="primary" @click="save">保存</i-button>
       </i-form-item>
@@ -89,6 +96,7 @@ export default {
     this.form.token = setting.token
     this.form.email = setting.email
     this.form.username = setting.username
+    this.form.backupRepo = setting.backupRepo
   },
   methods: {
     ...mapActions({

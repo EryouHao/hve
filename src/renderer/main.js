@@ -13,10 +13,6 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-Vue.prototype.$dbPosts = db.posts
-Vue.prototype.$dbConfig = db.config
-Vue.prototype.$dbWeb = db.website
-
 Vue.prototype.$db = db.db
 Vue.prototype.$site = db.site
 

@@ -15,6 +15,9 @@
 import fs from 'fs'
 import simpleGit from 'simple-git/promise'
 import moment from 'moment'
+import fse from 'fs-extra'
+import { buildPost, buildPostList, buildSinglePage } from '@/lib/util/post'
+import { renderStylus } from '@/lib/util/theme'
 
 // const spawn = promiseSpawn
 let git
@@ -31,6 +34,7 @@ export default {
   methods: {
     async publish() {
       this.loading = true
+      await this.build()
       // 初始化参数
       this.setting = this.$store.state.setting
       git = simpleGit(`${this.setting.source}/public`)
@@ -77,6 +81,46 @@ export default {
         this.loading = false
         this.$Message.warning('Your blog is not updated.')
       }
+    },
+    async build() {
+      const posts = await this.$db
+        .get('posts')
+        .sortBy('data.date')
+        .desc()
+        .value()
+      const pages = await this.$db
+        .get('pages')
+        .sortBy('data.index')
+        .value()
+      const basePath = this.$store.state.setting.source
+      const templatePath = `${basePath}/theme/easy/layout`
+      const outputPath = `${basePath}/public`
+      console.log(this.$store.state)
+      const config = {
+        website: this.$store.state.website,
+        templatePath: templatePath,
+        outputPath: outputPath,
+        domain: this.$store.state.setting.domain,
+        pageSize: this.$store.state.website.pageSize,
+      }
+      console.log('...config...', config)
+      // 渲染文章
+      await fse.ensureDir(`${outputPath}/post`)
+      await fse.emptyDir(`${outputPath}/post`)
+      posts.forEach((post) => {
+        buildPost(post, config)
+      })
+      // 渲染列表页
+      buildPostList(posts, config)
+      // 渲染单页
+      console.log('xuanranshi: ', config)
+      buildSinglePage(pages, config)
+      // 编译 stylus
+      const stylusPath = `${basePath}/theme/easy/source/stylus`
+      const cssPath = `${basePath}/public/css`
+      await fse.ensureDir(`${outputPath}/css`)
+      await fse.emptyDir(`${outputPath}/css`)
+      renderStylus(stylusPath, cssPath)
     },
   },
 }

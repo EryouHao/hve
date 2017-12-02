@@ -134,8 +134,7 @@ async function buildPostList(postList, config) {
 async function buildSinglePage(pages, config) {
   for (let page of pages) {
     const contentHtml = marked(page.content, { breaks: true })
-    const templateStr = await fs.readFileAsync(`${config.templatePath}/page.pug`, 'utf8')
-    const template = pug.compile(templateStr, {
+    const template = pug.compileFile(`${config.templatePath}/page.pug`, {
       filename: 'index.html',
       basedir: config.templatePath,
       pretty: true,
@@ -162,6 +161,7 @@ async function buildHtmlWithLayout(config, content) {
     basedir: config.templatePath,
     pretty: true,
   })
+  console.log('config.website: ', config.website)
   const html = template({
     website: config.website,
     domain: config.domain,

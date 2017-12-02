@@ -7,6 +7,7 @@ const state = {
   branch: null,
   email: null,
   username: null,
+  backupRepo: null,
 }
 
 const mutations = {
@@ -18,6 +19,7 @@ const mutations = {
     state.token = payload.token
     state.email = payload.email
     state.username = payload.username
+    state.backupRepo = payload.backupRepo
   },
 }
 

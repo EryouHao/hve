@@ -42,7 +42,9 @@ export default {
     this.acUpdateSetting(config)
     // website setting
     const siteConfig = this.$site.get('config').value()
+    console.log('siteConfig: ', siteConfig)
     this.acUpdateWebsiteSetting(siteConfig)
+    console.log(this.$store.state.website)
   },
   methods: {
     ...mapActions({

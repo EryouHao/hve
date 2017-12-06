@@ -36,9 +36,12 @@ export default {
       return this.spanLeft === 5 ? 14 : 24
     },
   },
-  async created() {
+  async mounted() {
     // remote setting
+    console.log('DB: ', this.$db)
+    console.log(this)
     const config = this.$db.get('remote').value()
+    console.log('config: ', config)
     this.acUpdateSetting(config)
     // website setting
     const siteConfig = this.$site.get('config').value()

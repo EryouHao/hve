@@ -38,16 +38,12 @@ export default {
   },
   async mounted() {
     // remote setting
-    console.log('DB: ', this.$db)
-    console.log(this)
     const config = this.$db.get('remote').value()
-    console.log('config: ', config)
     this.acUpdateSetting(config)
     // website setting
     const siteConfig = this.$site.get('config').value()
     console.log('siteConfig: ', siteConfig)
     this.acUpdateWebsiteSetting(siteConfig)
-    console.log(this.$store.state.website)
   },
   methods: {
     ...mapActions({

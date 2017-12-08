@@ -1,5 +1,6 @@
 const fs = require('fs')
 const fse = require('fs-extra')
+const junk = require('junk')
 const pug = require('pug')
 const matter = require('gray-matter')
 const marked = require('marked')
@@ -12,11 +13,9 @@ Promise.promisifyAll(fs)
 async function getPostList(postPath) {
   const resultList = []
   const requestList = []
-  const files = await fse.readdir(postPath)
+  let files = await fse.readdir(postPath)
+  files = files.filter(junk.not)
   files.forEach((item) => {
-    if (item === '.DS_Store') {
-      return
-    }
     requestList.push(fs.readFileAsync(`${postPath}/${item}`, 'utf8'))
   })
   const results = await Promise.all(requestList)
@@ -24,7 +23,7 @@ async function getPostList(postPath) {
     const post = matter(result)
     // 摘要
     post.abstract = (post.content).substring(0, post.content.indexOf('<!-- more -->'))
-    post.fileName = files[index + 1].substring(0, files[index + 1].length - 3) // 有待优化!
+    post.fileName = files[index].substring(0, files[index].length - 3) // 有待优化!
     resultList.push(post)
   })
   return Promise.resolve(resultList)
@@ -33,7 +32,8 @@ async function getPostList(postPath) {
 async function getPageList(pagePath) {
   const resultList = []
   const requestList = []
-  const dirs = await fse.readdir(pagePath)
+  let dirs = await fse.readdir(pagePath)
+  dirs = dirs.filter(junk.not)
   dirs.forEach(dir => {
     requestList.push(fs.readFileAsync(`${pagePath}/${dir}/index.md`, 'utf8'))
   })
@@ -144,7 +144,6 @@ async function buildSinglePage(pages, config) {
       content: contentHtml,
     })
     const html = await buildHtmlWithLayout(config, pageHtml)
-    console.log('html: ', html)
     fse.ensureDir(`${config.outputPath}/${page.linkName}`)
     await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, html)
   }

@@ -28,11 +28,11 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { getPostList } from '@/lib/util/post'
 import fse from 'fs-extra'
-import PostPreview from './PostPreview'
+import moment from 'moment'
 import marked from 'marked'
+import { getPostList } from '@/lib/util/post'
+import PostPreview from './PostPreview'
 
 export default {
   components: {
@@ -50,10 +50,12 @@ export default {
   async created() {
     // init posts
     this.$db.defaults({ posts: [] })
+    console.log('this.$db: ', this.$db)
     // empty posts
     await this.$db.get('posts').remove().write()
     // read posts
     this.postList = await this.getPostList()
+    console.log('文章列表：', this.postList)
     await this.$db.set('posts', this.postList).write()
     this.queryPosts()
   },
@@ -66,6 +68,7 @@ export default {
         .value()
     },
     async getPostList() {
+      console.log('设置为：', this.$store.state.setting)
       const postPath = `${this.$store.state.setting.source}/posts`
       const postList = await getPostList(postPath)
       return postList

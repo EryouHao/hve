@@ -81,7 +81,6 @@ export default {
       .desc()
       .value()
     // update site menu config
-    console.log(this.pageList)
     this.menus = this.pageList.map(page => {
       console.log(page)
       return {

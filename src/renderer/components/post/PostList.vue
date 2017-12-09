@@ -53,14 +53,17 @@ export default {
     }
   },
   async created() {
-    // init posts
+    // Init posts
     this.$db.defaults({ posts: [] })
-    // empty posts
+
+    // Empty posts
     await this.$db.get('posts').remove().write()
-    // read posts
+
+    // Read posts and write to db
     const postList = await this.getPostList()
     await this.$db.set('posts', postList).write()
-    // 显示文章时按时间排序
+
+    // Sort articles by time when displaying articles
     this.postList = await this.queryPosts()
   },
   methods: {
@@ -105,7 +108,8 @@ export default {
   },
   filters: {
     formatDate(date) {
-      return moment(date).format('YYYY-MM-DD')
+      // Should use new Date(date) https://github.com/moment/moment/issues/1407
+      return moment(new Date(date)).format('YYYY-MM-DD')
     },
   },
 }

@@ -1,25 +1,61 @@
-// const fs = require('fs')
 const fse = require('fs-extra')
-// const path = require('path')
-// const chunk = require('chunk')
-// const moment = require('moment')
+const DB = require('../datastore')
 const Post = require('./util/post')
+const Theme = require('./util/theme')
 
-module.exports = {
-  async build(env, posts, options) {
-    const dir = env === 'dev' ? '.tmp' : 'public'
-    const templatePath = '/Users/haoeryou/fed/hve/blog/theme/easy/layout'
-    const outputPath = `/Users/haoeryou/fed/hve/${dir}`
-    // 渲染文章
-    // 创建预览文件夹 .tmp
-    await fse.ensureDir(dir)
-    await fse.emptyDir(`${outputPath}/post`)
-    posts.forEach((post) => {
-      Post.buildPost(post, templatePath, outputPath)
-    })
-    Post.buildPostList(posts, templatePath, outputPath)
-  },
-  // build() {
-  //   console.log('build')
-  // },
+async function build(type) {
+  const posts = await DB.db
+    .get('posts')
+    .sortBy('data.date')
+    .desc()
+    .value()
+  const pages = await DB.db
+    .get('pages')
+    .sortBy('data.index')
+    .value()
+
+  const setting = await DB.db.get('remote').value()
+  const website = await DB.site.get('config').value()
+
+  const inputPath = setting.source
+  const outputPath = `${inputPath}/${type === 'preview' ? 'preview' : 'public'}`
+  const domain = (type === 'preview' ? `${inputPath}/preview` : setting.domain)
+
+  const config = {
+    website: website,
+    templatePath: `${inputPath}/theme/easy/layout`,
+    outputPath: outputPath,
+    domain: domain,
+    pageSize: website.pageSize,
+  }
+  console.log('...config...', config)
+  // 渲染文章
+  await fse.ensureDir(`${outputPath}/post`)
+  await fse.emptyDir(`${outputPath}/post`)
+  posts.forEach((post) => {
+    Post.buildPost(post, config)
+  })
+  // 渲染列表页
+  Post.buildPostList(posts, config)
+  // 渲染单页
+  Post.buildSinglePage(pages, config)
+  // 编译 stylus
+  const stylusPath = `${inputPath}/theme/easy/source/stylus`
+  const cssPath = `${inputPath}/preview/css`
+  await fse.ensureDir(`${outputPath}/css`)
+  await fse.emptyDir(`${outputPath}/css`)
+  Theme.renderStylus(stylusPath, cssPath)
+}
+
+async function previewBuild() {
+  await build('preview')
+}
+
+async function publishBuild() {
+  build('publish')
+}
+
+export {
+  previewBuild,
+  publishBuild,
 }

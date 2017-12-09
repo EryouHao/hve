@@ -64,7 +64,7 @@ async function buildPost(post, config) {
     date: moment(post.data.date).format('MMMM Do YYYY, a'),
     content: contentHtml,
   })
-  const html = await buildHtmlWithLayout(config, postHtml)
+  const html = await buildHtmlWithLayout(postHtml, config)
   await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, html)
 }
 
@@ -113,7 +113,7 @@ async function buildPostList(postList, config) {
     }
     // 输出
     const postListHtml = template(data)
-    const html = await buildHtmlWithLayout(config, postListHtml)
+    const html = await buildHtmlWithLayout(postListHtml, config)
     let outputDir
     if (i === 0) {
       outputDir = `${config.outputPath}`
@@ -143,7 +143,7 @@ async function buildSinglePage(pages, config) {
       title: page.data.title,
       content: contentHtml,
     })
-    const html = await buildHtmlWithLayout(config, pageHtml)
+    const html = await buildHtmlWithLayout(pageHtml, config)
     fse.ensureDir(`${config.outputPath}/${page.linkName}`)
     await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, html)
   }
@@ -151,10 +151,10 @@ async function buildSinglePage(pages, config) {
 
 /**
  * 基本继承布局
- * @param {Object} config
  * @param {String} content
+ * @param {Object} config
  */
-async function buildHtmlWithLayout(config, content) {
+async function buildHtmlWithLayout(content, config) {
   const template = pug.compileFile(`${config.templatePath}/layout.pug`, {
     filename: 'index.html',
     basedir: config.templatePath,

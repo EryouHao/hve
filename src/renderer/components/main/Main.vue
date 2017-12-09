@@ -1,5 +1,5 @@
 <template>
-  <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
+  <div class="layout">
     <sidebar></sidebar>
     <div class="right">
       <div class="content">
@@ -7,11 +7,6 @@
       </div>
       <div class="copy">
         2017 &copy; EryouHao
-      </div>
-      <div class="new-post">
-        <router-link to="/new">
-          <i-button type="primary" shape="circle" icon="plus-round" size="large"></i-button>
-        </router-link>
       </div>
     </div>
   </div>
@@ -27,14 +22,7 @@ export default {
   },
   data() {
     return {
-      spanLeft: 5,
-      spanRight: 19,
     }
-  },
-  computed: {
-    iconSize() {
-      return this.spanLeft === 5 ? 14 : 24
-    },
   },
   async mounted() {
     // remote setting
@@ -42,7 +30,6 @@ export default {
     this.acUpdateSetting(config)
     // website setting
     const siteConfig = this.$site.get('config').value()
-    console.log('siteConfig: ', siteConfig)
     this.acUpdateWebsiteSetting(siteConfig)
   },
   methods: {
@@ -81,11 +68,6 @@ export default {
       text-align: center;
       padding: 10px 0 20px;
       color: #9ea7b4;
-    }
-    .new-post {
-      position: fixed;
-      right: 20px;
-      bottom: 10px;
     }
   }
 }

@@ -31,7 +31,7 @@
         <div class="markdown-con">
           <markdown-editor class="md-editor" preview-class="markdown-body" v-model="form.content"></markdown-editor>
           <div class="btns">
-            <i-button type="primary" @click="save">Save</i-button>
+            <i-button type="primary" @click="save">保存</i-button>
           </div>
         </div>
       </i-form-item>
@@ -42,7 +42,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { tags } from '@/store/types'
-import fs from 'fs'
+import fse from 'fs-extra'
 import moment from 'moment'
 import matter from 'gray-matter'
 import MarkdownEditor from 'vue-simplemde/src/markdown-editor'
@@ -55,7 +55,7 @@ export default {
     return {
       form: {
         title: '',
-        date: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+        date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'), // 24小时制 HH
         tags: [],
         content: '',
         fileName: '',
@@ -81,16 +81,15 @@ tags: ${this.form.tags.join(' ')}
 ---
 ${this.form.content}
 `
-      const basePath = this.$store.state.setting.source
-      console.log(this.$store.state)
-      console.log('mdStr: ', mdStr)
       try {
-        console.log('this.form.fileName', this.form.fileName)
-        await fs.writeFile(`${basePath}/posts/${this.form.fileName}.md`, mdStr)
+        const basePath = this.$db.get('remote').value().source
+        // write file must use fse, beause fs.writeFile need callback
+        await fse.writeFile(`${basePath}/posts/${this.form.fileName}.md`, mdStr)
         const post = matter(mdStr)
         post.fileName = this.form.fileName // 更新DB时添加fileName字段
         await this.$db.get('posts').push(post).write()
-        this.$Message.success('Post is saved!')
+        this.$Message.success('🎉 恭喜，您又多了一篇新创作！')
+        this.$router.push('/post-list')
       } catch (e) {
         console.log(e)
       }

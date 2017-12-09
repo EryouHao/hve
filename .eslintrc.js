@@ -24,6 +24,12 @@ module.exports = {
     'space-before-function-paren': ['error', 'never'],
     // require trailing commas
     'comma-dangle': ['error', 'always-multiline'],
+    // allow multiple spances
+    'no-multi-spaces': [1, {
+        'exceptions': {
+            'VariableDeclarator': true
+        }
+    }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

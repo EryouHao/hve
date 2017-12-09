@@ -59,7 +59,7 @@ export default {
       if (statusSummary.modified.length > 0) {
         try {
           await git.add('./*')
-          await git.commit(`update backup from hve: ${moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}`)
+          await git.commit(`update backup from hve: ${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}`)
           await git.push('origin', `${this.setting.branch}`)
           this.loading = false
           this.$Message.success('Backup done!')

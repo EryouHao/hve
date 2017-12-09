@@ -13,7 +13,7 @@
         <div class="markdown-con">
           <markdown-editor class="md-editor" preview-class="markdown-body" v-model="form.content"></markdown-editor>
           <div class="btns">
-            <i-button type="primary" @click="save">Save</i-button>
+            <i-button type="primary" @click="save">保存</i-button>
           </div>
         </div>
       </i-form-item>

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Main from '@/components/main/Main'
 import PostList from '@/components/post/PostList'
-import NewPost from '@/components/post/NewPost'
+import PostNew from '@/components/post/PostNew'
 import Setting from '@/components/setting/Setting'
 import Theme from '@/components/theme/Theme'
 import SinglePage from '@/components/single-page/SinglePage'
@@ -25,7 +25,7 @@ export default new Router({
         {
           path: '/new',
           name: 'new-post',
-          component: NewPost,
+          component: PostNew,
         },
         {
           path: '/theme',

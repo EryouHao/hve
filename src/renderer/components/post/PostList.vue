@@ -23,6 +23,11 @@
       </i-poptip>
       <time v-else>{{ post.data.date | formatDate }}</time>
     </p>
+    <div class="new-post">
+      <router-link to="/new">
+        <i-button type="primary" shape="circle" icon="plus-round" size="large"></i-button>
+      </router-link>
+    </div>
     <post-preview v-if="preview" :post="currentPost"></post-preview>
   </div>
 </template>
@@ -50,25 +55,23 @@ export default {
   async created() {
     // init posts
     this.$db.defaults({ posts: [] })
-    console.log('this.$db: ', this.$db)
     // empty posts
     await this.$db.get('posts').remove().write()
     // read posts
-    this.postList = await this.getPostList()
-    console.log('文章列表：', this.postList)
-    await this.$db.set('posts', this.postList).write()
-    this.queryPosts()
+    const postList = await this.getPostList()
+    await this.$db.set('posts', postList).write()
+    // 显示文章时按时间排序
+    this.postList = await this.queryPosts()
   },
   methods: {
     async queryPosts() {
-      this.postList = await this.$db
-        .get('posts')
+      const list = await this.$db.get('posts')
         .sortBy('data.date')
         .desc()
         .value()
+      return list
     },
     async getPostList() {
-      console.log('设置为：', this.$store.state.setting)
       const postPath = `${this.$store.state.setting.source}/posts`
       const postList = await getPostList(postPath)
       return postList
@@ -78,10 +81,10 @@ export default {
         await this.$db.get('posts')
           .remove(d => d.data.title === post.data.title && d.data.date === post.data.date)
           .write()
-        const basePath = this.$store.state.setting.source
+        const basePath = this.$db.get('remote').value().source
         await fse.remove(`${basePath}/posts/${post.fileName}.md`)
         this.postList.splice(this.postList.indexOf(post), 1)
-        console.log('删除成功')
+        this.$Message.success('😔  您删除了一篇创作，期待您新的创作！')
       } catch (e) {
         console.log(e)
       }
@@ -127,5 +130,10 @@ export default {
         padding-left: 15px;
       }
     }
+  }
+  .new-post {
+    position: fixed;
+    right: 20px;
+    bottom: 10px;
   }
 </style>

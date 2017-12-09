@@ -7,6 +7,11 @@
 <script>
   export default {
     name: 'hve',
+    created() {
+      this.$Message.config({
+        duration: 3,
+      })
+    },
   }
 </script>
 

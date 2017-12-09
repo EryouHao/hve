@@ -65,6 +65,7 @@ export default {
     async commonPush() {
       console.log('common push')
       const statusSummary = await git.status()
+      console.log('statusSummary', statusSummary)
       if (statusSummary.modified.length > 0) {
         try {
           await git.add('./*')

@@ -1,7 +1,7 @@
 <template>
   <div class="single-page">
     <h2>
-      单页设置
+      页面设置
       <i-dropdown
         class="new-page"
         trigger="click"
@@ -46,17 +46,17 @@
       </i-card>
     </div>
     <!-- 普通页 -->
-    <new-common-page v-if="showNewCommonPage" :page="currentPage"></new-common-page>
+    <page-common v-if="showNewCommonPage" :page="currentPage"></page-common>
   </div>
 </template>
 
 <script>
 import { getPageList } from '@/lib/util/post'
-import NewCommonPage from './NewCommonPage'
+import PageCommon from './PageCommon'
 
 export default {
   components: {
-    NewCommonPage,
+    PageCommon,
   },
   data() {
     return {

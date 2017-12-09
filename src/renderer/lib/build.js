@@ -36,15 +36,15 @@ async function build(type) {
     Post.buildPost(post, config)
   })
   // 渲染列表页
-  Post.buildPostList(posts, config)
+  await Post.buildPostList(posts, config)
   // 渲染单页
-  Post.buildSinglePage(pages, config)
+  await Post.buildSinglePage(pages, config)
   // 编译 stylus
   const stylusPath = `${inputPath}/theme/easy/source/stylus`
-  const cssPath = `${inputPath}/preview/css`
+  const cssPath = `${outputPath}/css`
   await fse.ensureDir(`${outputPath}/css`)
   await fse.emptyDir(`${outputPath}/css`)
-  Theme.renderStylus(stylusPath, cssPath)
+  await Theme.renderStylus(stylusPath, cssPath)
 }
 
 async function previewBuild() {
@@ -52,7 +52,7 @@ async function previewBuild() {
 }
 
 async function publishBuild() {
-  build('publish')
+  await build('publish')
 }
 
 export {

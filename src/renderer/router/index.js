@@ -5,7 +5,7 @@ import PostList from '@/components/post/PostList'
 import PostNew from '@/components/post/PostNew'
 import Setting from '@/components/setting/Setting'
 import Theme from '@/components/theme/Theme'
-import SinglePage from '@/components/single-page/SinglePage'
+import Page from '@/components/page/Page'
 import NewCommonPage from '@/components/single-page/NewCommonPage'
 import NewCustomPage from '@/components/single-page/NewCustomPage'
 
@@ -33,9 +33,9 @@ export default new Router({
           component: Theme,
         },
         {
-          path: '/single-page',
-          name: 'single-page',
-          component: SinglePage,
+          path: '/page',
+          name: 'page',
+          component: Page,
         },
         {
           path: '/new-common-page',

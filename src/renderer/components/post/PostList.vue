@@ -36,8 +36,9 @@
 import fse from 'fs-extra'
 import moment from 'moment'
 import marked from 'marked'
-import { getPostList } from '@/lib/util/post'
+import Post from '@/lib/util/post'
 import PostPreview from './PostPreview'
+const post = new Post()
 
 export default {
   components: {
@@ -76,7 +77,7 @@ export default {
     },
     async getPostList() {
       const postPath = `${this.$store.state.setting.source}/posts`
-      const postList = await getPostList(postPath)
+      const postList = await post.renderPostList(postPath)
       return postList
     },
     async deletePost(post) {

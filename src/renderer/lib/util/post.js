@@ -10,169 +10,160 @@ moment.locale('zh-cn')
 const Promise = require('bluebird')
 Promise.promisifyAll(fs)
 
-async function getPostList(postPath) {
-  const resultList = []
-  const requestList = []
-  let files = await fse.readdir(postPath)
-  files = files.filter(junk.not)
-  files.forEach((item) => {
-    requestList.push(fs.readFileAsync(`${postPath}/${item}`, 'utf8'))
-  })
-  const results = await Promise.all(requestList)
-  results.forEach((result, index) => {
-    const post = matter(result)
-    // 摘要
-    post.abstract = (post.content).substring(0, post.content.indexOf('<!-- more -->'))
-    post.fileName = files[index].substring(0, files[index].length - 3) // 有待优化!
-    resultList.push(post)
-  })
-  return Promise.resolve(resultList)
-}
-
-async function getPageList(pagePath) {
-  const resultList = []
-  const requestList = []
-  let dirs = await fse.readdir(pagePath)
-  dirs = dirs.filter(junk.not)
-  dirs.forEach(dir => {
-    requestList.push(fs.readFileAsync(`${pagePath}/${dir}/index.md`, 'utf8'))
-  })
-  const results = await Promise.all(requestList)
-  results.forEach((result, index) => {
-    const page = matter(result)
-    page.linkName = dirs[index]
-    resultList.push(page)
-  })
-  return Promise.resolve(resultList)
-}
-
-/**
- * 文章页
- * @param {Object} post
- * @param {Object} config
- */
-async function buildPost(post, config) {
-  const contentHtml = marked(post.content, { breaks: true })
-  const template = pug.compileFile(`${config.templatePath}/post.pug`, {
-    filename: 'index.html',
-    basedir: config.templatePath,
-    pretty: true,
-  })
-  const postHtml = template({
-    domain: config.domain,
-    title: post.data.title,
-    date: moment(post.data.date).format('MMMM Do YYYY, a'),
-    content: contentHtml,
-  })
-  const html = await buildHtmlWithLayout(postHtml, config)
-  await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, html)
-}
-
-/**
- * 首页 分页
- * @param {Array} postList
- * @param {Object} config
- */
-async function buildPostList(postList, config) {
-  const template = pug.compileFile(`${config.templatePath}/index.pug`, {
-    filename: 'index.html',
-    basedir: config.templatePath,
-    pretty: true,
-  })
-  const list = postList.map(post => {
-    post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
-    console.log(post.data.tags)
-    if (post.data.tags) {
-      post.data.tags = post.data.tags.split(' ')
-    } else {
-      post.data.tags = []
-    }
-    return post
-  })
-  const data = {
-    domain: config.domain,
-    articles: [],
-    prevLink: '',
-    nextLink: '',
+class Post {
+  constructor() {
+    this.post = 'hve'
   }
-  // 分页
-  const perPage = config.pageSize
-  for (let i = 0, len = list.length; (i * perPage) < len; i = i + 1) {
-    data.articles = list.slice(perPage * i, (i + 1) * perPage)
-    if (i === 0) {
-      data.prevLink = ''
-    } else if (i === 1) {
-      data.prevLink = `${config.domain}/`
-    } else {
-      data.prevLink = `${config.domain}/page/${i}/`
-    }
-    if (((i + 1) * perPage) >= len) {
-      data.nextLink = ''
-    } else {
-      data.nextLink = `${config.domain}/page/${i + 2}/`
-    }
-    // 输出
-    const postListHtml = template(data)
-    const html = await buildHtmlWithLayout(postListHtml, config)
-    let outputDir
-    if (i === 0) {
-      outputDir = `${config.outputPath}`
-    } else {
-      outputDir = `${config.outputPath}/page/${i + 1}`
-    }
-    await fse.ensureDir(outputDir)
-    console.log('输出目录：', outputDir)
-    await fs.writeFileAsync(`${outputDir}/index.html`, html)
-    console.log('共生成文章数：', len)
-  }
-}
-/**
- * 单页
- * @param {Array} pages
- * @param {Object} config
- */
-async function buildSinglePage(pages, config) {
-  for (let page of pages) {
-    const contentHtml = marked(page.content, { breaks: true })
-    const template = pug.compileFile(`${config.templatePath}/page.pug`, {
+
+  // 文章页
+  async renderPost(post, config) {
+    const contentHtml = marked(post.content, { breaks: true })
+    const template = pug.compileFile(`${config.templatePath}/post.pug`, {
       filename: 'index.html',
       basedir: config.templatePath,
       pretty: true,
     })
-    const pageHtml = template({
-      title: page.data.title,
+    const postHtml = template({
+      domain: config.domain,
+      title: post.data.title,
+      date: moment(post.data.date).format('MMMM Do YYYY, a'),
       content: contentHtml,
     })
-    const html = await buildHtmlWithLayout(pageHtml, config)
-    fse.ensureDir(`${config.outputPath}/${page.linkName}`)
-    await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, html)
+    const html = await this._renderHtmlWithLayout(postHtml, config)
+    await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, html)
+  }
+
+  // 页面
+  async renderSinglePage(pages, config) {
+    for (let page of pages) {
+      const contentHtml = marked(page.content, { breaks: true })
+      const template = pug.compileFile(`${config.templatePath}/page.pug`, {
+        filename: 'index.html',
+        basedir: config.templatePath,
+        pretty: true,
+      })
+      const pageHtml = template({
+        title: page.data.title,
+        content: contentHtml,
+      })
+      const html = await this._renderHtmlWithLayout(pageHtml, config)
+      fse.ensureDir(`${config.outputPath}/${page.linkName}`)
+      await fs.writeFileAsync(`${config.outputPath}/${page.linkName}/index.html`, html)
+    }
+  }
+
+  // 基本继承布局
+  async _renderHtmlWithLayout(content, config) {
+    const template = pug.compileFile(`${config.templatePath}/layout.pug`, {
+      filename: 'index.html',
+      basedir: config.templatePath,
+      pretty: true,
+    })
+    const html = template({
+      website: config.website,
+      domain: config.domain,
+      content: content,
+    })
+    return html
+  }
+
+  // 获取文章列表数据
+  async getPostList(postPath) {
+    const resultList = []
+    const requestList = []
+    let files = await fse.readdir(postPath)
+    files = files.filter(junk.not)
+    files.forEach((item) => {
+      requestList.push(fs.readFileAsync(`${postPath}/${item}`, 'utf8'))
+    })
+    const results = await Promise.all(requestList)
+    results.forEach((result, index) => {
+      const post = matter(result)
+      // 摘要
+      post.abstract = (post.content).substring(0, post.content.indexOf('<!-- more -->'))
+      post.fileName = files[index].substring(0, files[index].length - 3) // 有待优化!
+      resultList.push(post)
+    })
+    return Promise.resolve(resultList)
+  }
+
+  // 获取页面数据
+  async getPageList(pagePath) {
+    const resultList = []
+    const requestList = []
+    let dirs = await fse.readdir(pagePath)
+    dirs = dirs.filter(junk.not)
+    dirs.forEach(dir => {
+      requestList.push(fs.readFileAsync(`${pagePath}/${dir}/index.md`, 'utf8'))
+    })
+    const results = await Promise.all(requestList)
+    results.forEach((result, index) => {
+      const page = matter(result)
+      page.linkName = dirs[index]
+      resultList.push(page)
+    })
+    return Promise.resolve(resultList)
+  }
+
+  // 构建文章列表 - 带分页
+  async renderPostList(postList, config) {
+    const list = postList.map(post => {
+      post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
+      console.log(post.data.tags)
+      if (post.data.tags) {
+        post.data.tags = post.data.tags.split(' ')
+      } else {
+        post.data.tags = []
+      }
+      return post
+    })
+    const data = {
+      domain: config.domain,
+      articles: [],
+      prevLink: '',
+      nextLink: '',
+    }
+    // 分页
+    const perPage = config.pageSize
+    for (let i = 0, len = list.length; (i * perPage) < len; i = i + 1) {
+      data.articles = list.slice(perPage * i, (i + 1) * perPage)
+      if (i === 0) {
+        data.prevLink = ''
+      } else if (i === 1) {
+        data.prevLink = `${config.domain}/`
+      } else {
+        data.prevLink = `${config.domain}/page/${i}/index.html`
+      }
+      if (((i + 1) * perPage) >= len) {
+        data.nextLink = ''
+      } else {
+        data.nextLink = `${config.domain}/page/${i + 2}/index.html`
+      }
+      let outputDir
+      if (i === 0) {
+        outputDir = `${config.outputPath}`
+      } else {
+        outputDir = `${config.outputPath}/page/${i + 1}`
+      }
+      await this._renderPostListHtml(config, data, outputDir)
+    }
+  }
+
+  async _renderPostListHtml(config, data, outputDir) {
+    const template = pug.compileFile(`${config.templatePath}/index.pug`, {
+      filename: 'index.html',
+      basedir: config.templatePath,
+      pretty: true,
+    })
+    // 输出
+    const postListHtml = template(data)
+    const html = await this._renderHtmlWithLayout(postListHtml, config)
+
+    await fse.ensureDir(outputDir)
+    await fs.writeFileAsync(`${outputDir}/index.html`, html)
   }
 }
 
-/**
- * 基本继承布局
- * @param {String} content
- * @param {Object} config
- */
-async function buildHtmlWithLayout(content, config) {
-  const template = pug.compileFile(`${config.templatePath}/layout.pug`, {
-    filename: 'index.html',
-    basedir: config.templatePath,
-    pretty: true,
-  })
-  console.log('config.website: ', config.website)
-  const html = template({
-    website: config.website,
-    domain: config.domain,
-    content: content,
-  })
-  return html
-}
-
-export {
-  getPostList,
-  buildPost,
-  buildPostList,
-  buildSinglePage,
-  getPageList,
-}
+const post = new Post()
+console.log(post)
+export default post

@@ -51,8 +51,9 @@
 </template>
 
 <script>
-import { getPageList } from '@/lib/util/post'
+import Post from '@/lib/util/post'
 import PageCommon from './PageCommon'
+const post = new Post()
 
 export default {
   components: {
@@ -97,7 +98,7 @@ export default {
   },
   methods: {
     async getSinglePageList() {
-      const pageList = await getPageList(`${this.$store.state.setting.source}/pages`)
+      const pageList = await post.renderPageList(`${this.$store.state.setting.source}/pages`)
       return pageList
     },
     newPage(type) {

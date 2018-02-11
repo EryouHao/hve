@@ -21,3 +21,6 @@ blog/config.yml
 blog/data.db
 blog/.*
 blog/pages/*
+
+yarn.lock
+package-lock.json

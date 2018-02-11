@@ -1,6 +1,10 @@
 const fse = require('fs-extra')
 const DB = require('../datastore')
 const Post = require('./util/post')
+console.log(Post)
+console.log(Post.post)
+// const post = new Post()
+
 const Theme = require('./util/theme')
 
 async function build(type) {
@@ -17,30 +21,34 @@ async function build(type) {
   const setting = await DB.db.get('remote').value()
   const website = await DB.site.get('config').value()
 
-  const inputPath = setting.source
-  const outputPath = `${inputPath}/${type === 'preview' ? 'preview' : 'public'}`
-  const domain = (type === 'preview' ? `${inputPath}/preview` : setting.domain)
+  const sourcePath = setting.source
+  const outputPath = `${sourcePath}/${type === 'preview' ? 'preview' : 'public'}`
+  const domain = type === 'preview' ? `${sourcePath}/preview` : setting.domain
 
   const config = {
     website: website,
-    templatePath: `${inputPath}/theme/easy/layout`,
+    templatePath: `${sourcePath}/theme/easy/layout`,
     outputPath: outputPath,
     domain: domain,
     pageSize: website.pageSize,
   }
   console.log('...config...', config)
+
   // 渲染文章
   await fse.ensureDir(`${outputPath}/post`)
   await fse.emptyDir(`${outputPath}/post`)
-  posts.forEach((post) => {
-    Post.buildPost(post, config)
+  posts.forEach(post => {
+    Post.renderPost(post, config)
   })
+
   // 渲染列表页
-  await Post.buildPostList(posts, config)
+  await Post.renderPostList(posts, config)
+
   // 渲染单页
-  await Post.buildSinglePage(pages, config)
+  await Post.renderSinglePage(pages, config)
+
   // 编译 stylus
-  const stylusPath = `${inputPath}/theme/easy/source/stylus`
+  const stylusPath = `${sourcePath}/theme/easy/source/stylus`
   const cssPath = `${outputPath}/css`
   await fse.ensureDir(`${outputPath}/css`)
   await fse.emptyDir(`${outputPath}/css`)
@@ -55,7 +63,4 @@ async function publishBuild() {
   await build('publish')
 }
 
-export {
-  previewBuild,
-  publishBuild,
-}
+export { previewBuild, publishBuild }

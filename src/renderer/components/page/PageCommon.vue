@@ -27,6 +27,8 @@ import fs from 'fs'
 import fse from 'fs-extra'
 import matter from 'gray-matter'
 import MarkdownEditor from 'vue-simplemde/src/markdown-editor'
+import { mapActions } from 'vuex'
+import { website } from '@/store/types'
 
 export default {
   props: {
@@ -56,6 +58,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      acUpdateWebsiteMenus: website.actions.UPDATE_MENUS,
+    }),
     checkTitle() {
       if (this.form.title !== '') {
         this.showLink = true
@@ -89,6 +94,9 @@ ${this.form.content}
         } else {
           await this.$db.get('pages').push(page).write()
         }
+        // 更新 store 中菜单
+        const menus = await this.$site.get('menus').value()
+        this.acUpdateWebsiteMenus(menus)
         this.$Message.success('Page is saved!')
       } catch (e) {
         console.log(e)

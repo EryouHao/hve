@@ -9,9 +9,11 @@ function addPrefix(types, prefix) {
 const website = {
   mutations: {
     UPDATE_SETTING: 'UPDATE_SETTING',
+    UPDATE_MENUS: 'UPDATE_MENUS',
   },
   actions: {
     UPDATE_SETTING: 'UPDATE_SETTING',
+    UPDATE_MENUS: 'UPDATE_MENUS',
   },
 }
 addPrefix(website, 'website')

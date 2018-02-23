@@ -81,7 +81,7 @@ export default {
       .sortBy('data.index')
       .desc()
       .value()
-    // update site menu config
+    // update site menu
     this.menus = this.pageList.map(page => {
       console.log(page)
       return {
@@ -90,11 +90,11 @@ export default {
       }
     })
     // init menus
-    this.$site.defaults({ 'config.menus': [] })
+    this.$site.defaults({ 'menus': [] })
     // empty menus
-    this.$site.get('config.menus').remove().write()
+    this.$site.get('menus').remove().write()
     // set menus
-    this.$site.set('config.menus', this.menus).write()
+    this.$site.set('menus', this.menus).write()
   },
   methods: {
     async getSinglePageList() {

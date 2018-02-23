@@ -2,12 +2,18 @@
   <div class="theme">
     <h2>网站设置</h2>
     <div>
-      <i-form :model="form" :label-width="80">
+      <i-form :model="form" :label-width="130" label-position="left">
         <i-form-item label="网站标题">
           <i-input v-model="form.title" placeholder="Hve"></i-input>
         </i-form-item>
         <i-form-item label="每页文章数">
           <i-input-number :min="1" v-model="form.pageSize"></i-input-number>
+        </i-form-item>
+        <i-form-item label="Gitment Client ID">
+          <i-input v-model="form.gitmentClientId" placeholder="Client ID"></i-input>
+        </i-form-item>
+        <i-form-item label="Gitment Client Secret">
+          <i-input v-model="form.gitmentClientSecret" placeholder="Client Secret"></i-input>
         </i-form-item>
         <i-form-item>
           <i-button type="primary" @click="save">保存</i-button>
@@ -26,6 +32,8 @@ export default {
       form: {
         title: '',
         pageSize: 5,
+        gitmentClientId: '',
+        gitmentClientSecret: '',
       },
     }
   },
@@ -33,6 +41,8 @@ export default {
     const website = this.$store.state.website
     this.form.title = website.title
     this.form.pageSize = website.pageSize
+    this.form.gitmentClientId = website.gitmentClientId
+    this.form.gitmentClientSecret = website.gitmentClientSecret
   },
   methods: {
     ...mapActions({

@@ -29,13 +29,16 @@ export default {
     const config = this.$db.get('remote').value()
     this.acUpdateSetting(config)
     // website setting
-    const siteConfig = this.$site.get('config').value()
+    const siteConfig = await this.$site.get('config').value()
+    const menus = await this.$site.get('menus').value()
     this.acUpdateWebsiteSetting(siteConfig)
+    this.acUpdateWebsiteMenus(menus)
   },
   methods: {
     ...mapActions({
       acUpdateSetting: setting.actions.UPDATE_SETTING,
       acUpdateWebsiteSetting: website.actions.UPDATE_SETTING,
+      acUpdateWebsiteMenus: website.actions.UPDATE_MENUS,
     }),
   },
 }

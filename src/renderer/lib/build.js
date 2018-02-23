@@ -19,18 +19,22 @@ class Build {
       .value()
 
     const setting = await DB.db.get('remote').value()
-    const website = await DB.site.get('config').value()
+    const websiteConfig = await DB.site.get('config').value()
+    const websiteMenus = await DB.site.get('menus').value()
 
     const sourcePath = setting.source
     const outputPath = `${sourcePath}/${type === 'preview' ? 'preview' : 'public'}`
     const domain = type === 'preview' ? `${sourcePath}/preview` : setting.domain
 
     const config = {
-      website: website,
+      website: {
+        config: websiteConfig,
+        menus: websiteMenus,
+      },
       templatePath: `${sourcePath}/theme/easy/layout`,
       outputPath: outputPath,
       domain: domain,
-      pageSize: website.pageSize,
+      pageSize: websiteConfig.pageSize,
     }
     console.log('...config...', config)
 

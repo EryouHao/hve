@@ -13,7 +13,8 @@
 import fs from 'fs'
 import simpleGit from 'simple-git/promise'
 import moment from 'moment'
-import { publishBuild } from '@/lib/build'
+import Build from '@/lib/build'
+const build = new Build()
 
 let git
 
@@ -30,7 +31,7 @@ export default {
     async publish() {
       this.loading = true
       // Build blog
-      await publishBuild()
+      await build.publishBuild()
 
       // Initialize setting from db
       this.setting = await this.$db.get('remote').value()

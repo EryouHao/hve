@@ -77,7 +77,7 @@ export default {
     },
     async getPostList() {
       const postPath = `${this.$store.state.setting.source}/posts`
-      const postList = await post.renderPostList(postPath)
+      const postList = await post.getPostList(postPath)
       return postList
     },
     async deletePost(post) {

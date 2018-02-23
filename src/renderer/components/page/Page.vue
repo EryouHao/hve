@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     async getSinglePageList() {
-      const pageList = await post.renderPageList(`${this.$store.state.setting.source}/pages`)
+      const pageList = await post.getPageList(`${this.$store.state.setting.source}/pages`)
       return pageList
     },
     newPage(type) {

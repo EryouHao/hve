@@ -109,12 +109,6 @@ class Post {
   async renderPostList(postList, config) {
     const list = postList.map(post => {
       post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
-      console.log(post.data.tags)
-      if (post.data.tags) {
-        post.data.tags = post.data.tags.split(' ')
-      } else {
-        post.data.tags = []
-      }
       return post
     })
     const data = {
@@ -130,7 +124,7 @@ class Post {
       if (i === 0) {
         data.prevLink = ''
       } else if (i === 1) {
-        data.prevLink = `${config.domain}/`
+        data.prevLink = `${config.domain}/index.html`
       } else {
         data.prevLink = `${config.domain}/page/${i}/index.html`
       }
@@ -164,6 +158,4 @@ class Post {
   }
 }
 
-const post = new Post()
-console.log(post)
-export default post
+export default Post

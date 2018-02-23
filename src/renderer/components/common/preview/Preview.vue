@@ -4,7 +4,8 @@
 
 <script>
 // import { shell } from 'electron'
-import { previewBuild } from '@/lib/build'
+import Build from '@/lib/build'
+const build = new Build()
 
 export default {
   data() {
@@ -12,7 +13,7 @@ export default {
   },
   methods: {
     async preview() {
-      await previewBuild()
+      await build.previewBuild()
       this.$Message.success(`🎉 您的站点已生成预览啦！`)
       // shell.openExternal('http://localhost:4000')
     },

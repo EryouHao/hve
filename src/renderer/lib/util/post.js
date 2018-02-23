@@ -4,6 +4,7 @@ const junk = require('junk')
 const pug = require('pug')
 const matter = require('gray-matter')
 const marked = require('marked')
+const _ = require('lodash')
 const moment = require('moment')
 moment.locale('zh-cn')
 
@@ -23,12 +24,31 @@ class Post {
       basedir: config.templatePath,
       pretty: true,
     })
-    const postHtml = template({
+    let postHtml = template({
       domain: config.domain,
       title: post.data.title,
       date: moment(post.data.date).format('MMMM Do YYYY, a'),
       content: contentHtml,
     })
+
+    // 渲染评论
+    const websiteConfig = config.website.config
+    if (websiteConfig.gitmentOwner) {
+      postHtml += `
+        <script>
+          var gitment = new Gitment({
+            owner: '${websiteConfig.gitmentOwner}',
+            repo: '${websiteConfig.gitmentRepo}',
+              oauth: {
+                client_id: '${websiteConfig.gitmentClientId}',
+                client_secret: '${websiteConfig.gitmentClientSecret}',
+              },
+            })
+            gitment.render('gitment-container')
+        </script>
+      `
+    }
+    console.log(postHtml)
     const html = await this._renderHtmlWithLayout(postHtml, config)
     await fs.writeFileAsync(`${config.outputPath}/post/${post.fileName}.html`, html)
   }
@@ -84,6 +104,7 @@ class Post {
       post.fileName = files[index].substring(0, files[index].length - 3) // 有待优化!
       resultList.push(post)
     })
+    console.log('resultList: ', resultList)
     return Promise.resolve(resultList)
   }
 
@@ -107,14 +128,13 @@ class Post {
 
   // 构建文章列表 - 带分页
   async renderPostList(postList, config) {
-    const list = postList.map(post => {
+    const list = _.cloneDeep(postList).map(post => {
       post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
       if (typeof post.data.tags === 'string' && post.data.tags) {
         post.data.tags = post.data.tags.split(' ')
       } else {
         post.data.tags = post.data.tags || []
       }
-      console.log('tags2: ', post.data.tags)
       return post
     })
     const data = {

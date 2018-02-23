@@ -3,6 +3,8 @@ import { website as types } from '../types'
 const state = {
   title: '',
   pageSize: 5,
+  gitmentOwner: '',
+  gitmentRepo: '',
   gitmentClientId: '',
   gitmentClientSecret: '',
   menus: [],
@@ -12,6 +14,8 @@ const mutations = {
   [types.mutations.UPDATE_SETTING](state, payload) {
     state.title = payload.title
     state.pageSize = payload.pageSize
+    state.gitmentOwner = payload.gitmentOwner
+    state.gitmentRepo = payload.gitmentRepo
     state.gitmentClientId = payload.gitmentClientId
     state.gitmentClientSecret = payload.gitmentClientSecret
   },

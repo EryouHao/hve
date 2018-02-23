@@ -9,6 +9,12 @@
         <i-form-item label="每页文章数">
           <i-input-number :min="1" v-model="form.pageSize"></i-input-number>
         </i-form-item>
+        <i-form-item label="Gitment Owner">
+          <i-input v-model="form.gitmentOwner" placeholder="Owner"></i-input>
+        </i-form-item>
+        <i-form-item label="Gitment Repo">
+          <i-input v-model="form.gitmentRepo" placeholder="Repo"></i-input>
+        </i-form-item>
         <i-form-item label="Gitment Client ID">
           <i-input v-model="form.gitmentClientId" placeholder="Client ID"></i-input>
         </i-form-item>
@@ -32,6 +38,8 @@ export default {
       form: {
         title: '',
         pageSize: 5,
+        gitmentOwner: '',
+        gitmentRepo: '',
         gitmentClientId: '',
         gitmentClientSecret: '',
       },
@@ -41,6 +49,8 @@ export default {
     const website = this.$store.state.website
     this.form.title = website.title
     this.form.pageSize = website.pageSize
+    this.form.gitmentOwner = website.gitmentOwner
+    this.form.gitmentRepo = website.gitmentRepo
     this.form.gitmentClientId = website.gitmentClientId
     this.form.gitmentClientSecret = website.gitmentClientSecret
   },

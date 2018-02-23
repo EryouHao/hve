@@ -40,10 +40,11 @@ export default {
       git = simpleGit(`${this.setting.source}/public`)
       const exist = await fs.existsSync(`${this.setting.source}/public/.git/`)
       if (exist) {
-        this.commonPush()
+        await this.commonPush()
       } else {
-        this.firstPush()
+        await this.firstPush()
       }
+      this.loading = false
     },
     async firstPush() {
       console.log('first push')
@@ -55,10 +56,8 @@ export default {
         await git.commit('first commit!')
         await git.addRemote('origin', `https://${this.setting.username}:${this.setting.token}@github.com/${this.setting.username}/${this.setting.repo}.git`)
         await git.push('origin', `${this.setting.branch}`, {'--force': true}) // Forced push
-        this.loading = false
         this.$Message.success('🎉 恭喜! 您的第一次发布成功啦，快去看看吧!')
       } catch (e) {
-        this.loading = false
         console.log(e)
         this.$Message.error(`😞 抱歉，我们似乎遇到了一些问题...`)
       }
@@ -72,15 +71,12 @@ export default {
           await git.add('./*')
           await git.commit(`update from hve: ${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}`)
           await git.push('origin', `${this.setting.branch}`)
-          this.loading = false
           this.$Message.success('🎉 您的站点已成功更新发布！')
         } catch (e) {
-          this.loading = false
           console.log(e)
           this.$Message.error(`😞 抱歉，我们似乎遇到了一些问题...`)
         }
       } else {
-        this.loading = false
         this.$Message.warning('😧 您的站点最近没有新内容，该加油创作啦！')
       }
     },

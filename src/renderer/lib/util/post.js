@@ -109,6 +109,12 @@ class Post {
   async renderPostList(postList, config) {
     const list = postList.map(post => {
       post.data.date = moment(post.data.date).format('MMMM Do YYYY, a')
+      if (typeof post.data.tags === 'string' && post.data.tags) {
+        post.data.tags = post.data.tags.split(' ')
+      } else {
+        post.data.tags = post.data.tags || []
+      }
+      console.log('tags2: ', post.data.tags)
       return post
     })
     const data = {
@@ -150,11 +156,13 @@ class Post {
       pretty: true,
     })
     // 输出
+    console.log('data: ', data)
     const postListHtml = template(data)
     const html = await this._renderHtmlWithLayout(postListHtml, config)
 
     await fse.ensureDir(outputDir)
     await fs.writeFileAsync(`${outputDir}/index.html`, html)
+    console.log('成功')
   }
 }
 

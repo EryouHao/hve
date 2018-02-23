@@ -1,5 +1,5 @@
 <template>
-  <i-button type="primary" long @click="preview">Preview</i-button>
+  <i-button type="primary" :loading="loading" long @click="preview">Preview</i-button>
 </template>
 
 <script>
@@ -9,11 +9,15 @@ const build = new Build()
 
 export default {
   data() {
-    return {}
+    return {
+      loading: false,
+    }
   },
   methods: {
     async preview() {
+      this.loading = true
       await build.previewBuild()
+      this.loading = false
       this.$Message.success(`🎉 您的站点已生成预览啦！`)
       // shell.openExternal('http://localhost:4000')
     },

@@ -6,7 +6,7 @@
         <router-view></router-view>
       </div>
       <div class="copy">
-        2017 &copy; EryouHao
+        2018 &copy; EryouHao
       </div>
     </div>
   </div>

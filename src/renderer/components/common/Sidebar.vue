@@ -9,19 +9,19 @@
     </div>
     <i-menu active-name="1" width="160px" @on-select="changeMenu">
       <i-menu-item name="post-list">
-        <span class="text">文章</span>
+        <span class="text">📝 文章</span>
       </i-menu-item>
       <i-menu-item name="theme">
-        <span class="text">主题</span>
+        <span class="text">🌁 主题</span>
       </i-menu-item>
       <i-menu-item name="page">
-        <span class="text">页面</span>
+        <span class="text">📄 页面</span>
       </i-menu-item>
       <i-menu-item name="setting">
-        <span class="text">配置</span>
+        <span class="text">🛠 配置</span>
       </i-menu-item>
       <i-menu-item name="resource">
-        <span class="text">资源</span>
+        <span class="text">📦 资源</span>
       </i-menu-item>
     </i-menu>
     <div class="btns">

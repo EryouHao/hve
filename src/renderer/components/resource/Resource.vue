@@ -66,7 +66,6 @@ export default {
       await this.fetchPostImages()
     },
     async deleteImage(image) {
-      console.log(image)
       await fse.removeSync(`${__static}/post-images/${image}`)
       await fse.removeSync(`${this.setting.source}/post-images/${image}`)
       this.$Message.success('图片已删除')

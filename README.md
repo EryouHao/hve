@@ -5,7 +5,9 @@
 基于 Electron-Vue、github pages，目前只支持 Mac
 
 # 快速开始
-0.下载
+0.下载（.dmg 文件）
+
+https://github.com/EryouHao/hve/releases
 
 1.然后进行基础配置
 

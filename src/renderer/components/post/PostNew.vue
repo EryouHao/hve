@@ -27,15 +27,26 @@
           @on-enter="addTag"
         ></i-input>
       </i-form-item>
+      <i-form-item label="图片库">
+        <i-button @click="imageModalVisible = true" icon="images"></i-button>
+      </i-form-item>
       <i-form-item label="内容">
         <div class="markdown-con">
-          <markdown-editor class="md-editor" preview-class="markdown-body" v-model="form.content"></markdown-editor>
+          <markdown-editor class="md-editor" :configs="configs" preview-class="markdown-body" v-model="form.content"></markdown-editor>
           <div class="btns">
-            <i-button type="primary" @click="save">保存</i-button>
+            <i-button type="primary" @click="save">保 存</i-button>
           </div>
         </div>
       </i-form-item>
     </i-form>
+
+    <!-- 图片库详情 -->
+    <i-modal v-model="imageModalVisible">
+      <post-images></post-images>
+      <div slot="footer">
+        📃 点击图片复制地址粘贴到文章即可
+      </div>
+    </i-modal>
   </div>
 </template>
 
@@ -46,10 +57,12 @@ import fse from 'fs-extra'
 import moment from 'moment'
 import matter from 'gray-matter'
 import MarkdownEditor from 'vue-simplemde/src/markdown-editor'
+import PostImages from './PostImages'
 
 export default {
   components: {
     MarkdownEditor,
+    PostImages,
   },
   data() {
     return {
@@ -63,6 +76,10 @@ export default {
       newTag: '',
       tags: [],
       showLink: false,
+      configs: {
+        toolbar: ['bold', 'italic', 'heading', 'code', 'quote', 'unordered-list', 'ordered-list', 'link', 'preview', 'fullscreen', 'guide'],
+      },
+      imageModalVisible: false,
     }
   },
   mounted() {

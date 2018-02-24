@@ -58,6 +58,9 @@ class Build {
     await fse.ensureDir(`${outputPath}/css`)
     await fse.emptyDir(`${outputPath}/css`)
     await theme.renderStylus(stylusPath, cssPath)
+
+    // 同步文章图片
+    await fse.copySync(`${sourcePath}/post-images`, `${outputPath}/post-images`)
   }
 
   async previewBuild() {

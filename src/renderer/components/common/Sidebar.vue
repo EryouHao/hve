@@ -20,6 +20,9 @@
       <i-menu-item name="setting">
         <span class="text">配置</span>
       </i-menu-item>
+      <i-menu-item name="resource">
+        <span class="text">资源</span>
+      </i-menu-item>
     </i-menu>
     <div class="btns">
       <backup></backup>

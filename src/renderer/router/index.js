@@ -6,6 +6,7 @@ import PostNew from '@/components/post/PostNew'
 import Setting from '@/components/setting/Setting'
 import Theme from '@/components/theme/Theme'
 import Page from '@/components/page/Page'
+import Resource from '@/components/resource/Resource'
 
 Vue.use(Router)
 
@@ -39,6 +40,11 @@ export default new Router({
           path: '/setting',
           name: 'setting',
           component: Setting,
+        },
+        {
+          path: '/resource',
+          name: 'resource',
+          component: Resource,
         },
         {
           path: '*',

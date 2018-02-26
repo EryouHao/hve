@@ -2,7 +2,7 @@
 
 import { app, BrowserWindow, Menu } from 'electron'
 
-import server from '../../server' // eslint-disable-line no-unused-vars
+// import server from '../../server' // eslint-disable-line no-unused-vars
 
 /**
  * Set `__static` path to static files in production
@@ -48,6 +48,7 @@ function createWindow() {
         {role: 'pasteandmatchstyle'},
         {role: 'delete'},
         {role: 'selectall'},
+        {role: 'toggledevtools'},
       ],
     },
   ]

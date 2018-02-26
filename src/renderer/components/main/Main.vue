@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+import fse from 'fs-extra'
 import { mapActions } from 'vuex'
 import { setting, website } from '@/store/types'
 import Sidebar from '@/components/common/Sidebar'
@@ -22,6 +23,7 @@ export default {
   },
   data() {
     return {
+      setting: null,
     }
   },
   async mounted() {
@@ -33,6 +35,9 @@ export default {
     const menus = await this.$site.get('menus').value()
     this.acUpdateWebsiteSetting(siteConfig)
     this.acUpdateWebsiteMenus(menus)
+
+    this.setting = this.$store.state.setting
+    await this.syncImages()
   },
   methods: {
     ...mapActions({
@@ -40,6 +45,27 @@ export default {
       acUpdateWebsiteSetting: website.actions.UPDATE_SETTING,
       acUpdateWebsiteMenus: website.actions.UPDATE_MENUS,
     }),
+    // 检查源文件目录图片和应用图片目录是否一致，若不一致则同步图片，以源文件目录图片为准
+    async syncImages() {
+      // 文章图片
+      const sourceImagesPath = `${this.setting.source}/post-images`
+      const appImagesPath = `${__static}/post-images`
+      const sourceImages = await fse.readdir(sourceImagesPath)
+      const appImages = await fse.readdir(appImagesPath)
+
+      if (sourceImages.length !== appImages.length) {
+        await fse.emptyDir(appImagesPath)
+        await fse.copySync(sourceImagesPath, appImagesPath)
+      }
+
+      // 头像
+      const sourceAvatarPath = `${this.setting.source}/images`
+      const appAvatarPath = `${__static}/images`
+      const appAvatar = await fse.readdir(appAvatarPath)
+      if (!appAvatar.length) {
+        await fse.copy(sourceAvatarPath, appAvatarPath)
+      }
+    },
   },
 }
 </script>

@@ -66,7 +66,7 @@ export default {
       console.log('common push')
       const statusSummary = await git.status()
       console.log('statusSummary', statusSummary)
-      if (statusSummary.modified.length > 0) {
+      if (statusSummary.modified.length > 0 || statusSummary.not_added.length > 0) {
         try {
           await git.add('./*')
           await git.commit(`update from hve: ${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}`)

@@ -38,23 +38,9 @@ export default {
   },
   async mounted() {
     this.setting = this.$store.state.setting
-
-    await this.syncImages()
     await this.fetchPostImages()
   },
   methods: {
-    // 检查源文件目录图片和应用图片目录是否一致，若不一致则同步图片，以源文件目录图片为准
-    async syncImages() {
-      const sourceImagesPath = `${this.setting.source}/post-images`
-      const appImagesPath = `${__static}/post-images`
-      const sourceImages = await fse.readdir(sourceImagesPath)
-      const appImages = await fse.readdir(appImagesPath)
-
-      if (sourceImages.length !== appImages.length) {
-        await fse.emptyDir(appImagesPath)
-        await fse.copySync(sourceImagesPath, appImagesPath)
-      }
-    },
     async fetchPostImages() {
       this.images = await postImages.getImages(`${__static}/post-images`)
     },

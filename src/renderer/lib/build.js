@@ -29,6 +29,7 @@ class Build {
     const config = {
       website: {
         config: websiteConfig,
+        title: websiteConfig.title,
         menus: websiteMenus,
       },
       templatePath: `${sourcePath}/theme/easy/layout`,
@@ -61,6 +62,8 @@ class Build {
 
     // 同步文章图片
     await fse.copySync(`${sourcePath}/post-images`, `${outputPath}/post-images`)
+    // 同步头像
+    await fse.copySync(`${sourcePath}/images`, `${outputPath}/images`)
   }
 
   async previewBuild() {
